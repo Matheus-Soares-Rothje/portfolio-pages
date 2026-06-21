@@ -17,8 +17,9 @@ const LANG_COLOR = {TypeScript:'#3178c6',JavaScript:'#f1e05a',Python:'#3572a5',G
 
 // Logo Mark SVG (placeholder matching design)
 const LOGO_MARK_SVG = 'assets/logo2.png';
-
 const LOGO_CIRCLE_SVG = 'assets/logo1.png';
+const PROFILE_PHOTO = 'assets/perfil.png';
+const PROFILE_THUMB = 'assets/thumb.png';
 
 // Try to load the user's actual logos via object URLs (uploaded)
 document.getElementById('logo-mark-cover').src = LOGO_MARK_SVG;
@@ -237,8 +238,13 @@ function renderAbout(){
   ];
   return `<div class="ch-wrap">
     ${chHeading('Sobre Mim')}
+    <div class="profile-header">
+      <div class="profile-thumb-bg" style="background-image:url('${PROFILE_THUMB}')"></div>
+      <div class="profile-photo-wrap">
+        <img class="profile-photo" src="${PROFILE_PHOTO}" alt="Matheus Rothje" onerror="this.style.display='none'"/>
+      </div>
+    </div>
     <div class="about-bio-row">
-      <img class="about-logo" src="${LOGO_MARK_SVG}" alt="mark"/>
       <div class="about-bio-box">
         ${aboutData.paragraphs.map(p=>`<p style="margin-bottom:10px;">${p}</p>`).join('')}
       </div>
