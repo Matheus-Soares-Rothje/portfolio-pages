@@ -7,7 +7,7 @@ const CHAPTERS = [
   {roman:'V',  label:'Contato'},
 ];
 const LAST_CHAPTER = CHAPTERS.length-1;
-const LANG_COLOR = {TypeScript:'#3178c6',JavaScript:'#f1e05a',Python:'#3572a5',Go:'#00add8',Rust:'#dea584',HTML:'#e34c26',CSS:'#563d7c',Java:'#b07219',Shell:'#89e051',Vue:'#41b883',PHP:'#777bb3',C:'#555555'};
+const LANG_COLOR = {TypeScript:'#3178c6',JavaScript:'#f1e05a',Python:'#3572a5',Go:'#00add8',Rust:'#dea584',HTML:'#e34c26',CSS:'#563d7c',Java:'#b07219',Shell:'#89e051',Vue:'#41b883',PHP:'#777bb3',C:'#555555','C++':'#f34b7d','C#':'#178600',SCSS:'#c6538c',Dockerfile:'#384d54','Jupyter Notebook':'#da5b0b',Kotlin:'#a97bff',Swift:'#f05138',Ruby:'#701516',Dart:'#00b4ab',Lua:'#000080'};
 
 // ── logos via GitHub raw (real user, uploaded files) ──
 // We'll use the uploaded images embedded in a data URI if possible, else placeholder
@@ -271,7 +271,8 @@ function renderProjects(){
 function buildProjectsHTML(){
   const cards=repos.map(r=>{
     const details=repoDetails[r.name]||{};
-    const langColor=LANG_COLOR[r.language]||'#22ff55';
+    const langs=repoLanguages[r.name]||(r.language?[r.language]:[]);
+    const langTags=langs.map(l=>`<span><span class="lang-dot" style="background:${LANG_COLOR[l]||'#22ff55'}"></span>${l}</span>`).join('');
     const hasThumb=details.thumb;
     const hasReadme=details.readme;
     const hasViewme=details.viewmes&&details.viewmes.length>0;
@@ -282,7 +283,7 @@ function buildProjectsHTML(){
       </div>
       ${r.description?`<p class="proj-desc">${r.description}</p>`:''}
       <div class="proj-meta">
-        ${r.language?`<span><span class="lang-dot" style="background:${langColor}"></span>${r.language}</span>`:''}
+        ${langTags}
         <span>★ ${r.stargazers_count}</span>
         <span>⑂ ${r.forks_count}</span>
       </div>
@@ -438,6 +439,8 @@ function bindExperienceEvents(){
 }
 
 // ── GitHub fetching ──
+let repoLanguages = {}; // { name: ['JavaScript','CSS','HTML'] }
+
 async function fetchRepos(){
   try{
     const r=await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=20`);
@@ -451,8 +454,26 @@ async function fetchRepos(){
       if(currentChapter===0){
         document.getElementById('page-content').innerHTML=renderAbout();
       }
+      fetchAllRepoLanguages();
     }
   }catch(e){console.warn('GitHub fetch failed',e);}
+}
+
+async function fetchAllRepoLanguages(){
+  await Promise.all(repos.map(async r=>{
+    try{
+      const res=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${r.name}/languages`);
+      const data=await res.json();
+      if(data&&typeof data==='object'&&!Array.isArray(data)){
+        // ordena por bytes de código, maior primeiro
+        repoLanguages[r.name]=Object.keys(data).sort((a,b)=>data[b]-data[a]);
+      }
+    }catch(e){/* ignora falha individual */}
+  }));
+  if(currentChapter===1){
+    document.getElementById('page-content').innerHTML=buildProjectsHTML();
+    bindProjectEvents();
+  }
 }
 
 async function loadRepoDetails(name){
