@@ -460,16 +460,40 @@ async function fetchRepos(){
 }
 
 async function fetchAllRepoLanguages(){
-  await Promise.all(repos.map(async r=>{
+  const CACHE_KEY='mattz_repo_languages_v1';
+  const CACHE_TTL=60*60*1000; // 1 hora
+
+  // tenta usar cache local primeiro
+  try{
+    const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+    if(cached&&cached.ts&&(Date.now()-cached.ts)<CACHE_TTL&&cached.data){
+      repoLanguages=cached.data;
+      if(currentChapter===1){
+        document.getElementById('page-content').innerHTML=buildProjectsHTML();
+        bindProjectEvents();
+      }
+      return;
+    }
+  }catch(e){}
+
+  // busca uma por vez, com pequeno intervalo, pra não estourar o rate limit
+  for(const r of repos){
     try{
       const res=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${r.name}/languages`);
-      const data=await res.json();
-      if(data&&typeof data==='object'&&!Array.isArray(data)){
-        // ordena por bytes de código, maior primeiro
-        repoLanguages[r.name]=Object.keys(data).sort((a,b)=>data[b]-data[a]);
+      if(res.ok){
+        const data=await res.json();
+        if(data&&typeof data==='object'&&!Array.isArray(data)){
+          repoLanguages[r.name]=Object.keys(data).sort((a,b)=>data[b]-data[a]);
+        }
       }
-    }catch(e){/* ignora falha individual */}
-  }));
+    }catch(e){/* ignora falha individual, mantém fallback de r.language */}
+    await new Promise(res=>setTimeout(res,150));
+  }
+
+  try{
+    localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:repoLanguages}));
+  }catch(e){}
+
   if(currentChapter===1){
     document.getElementById('page-content').innerHTML=buildProjectsHTML();
     bindProjectEvents();
