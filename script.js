@@ -240,6 +240,7 @@ function renderAbout(){
     ${chHeading('Sobre Mim')}
     <div class="profile-header">
       <div class="profile-thumb-bg" style="background-image:url('${PROFILE_THUMB}')"></div>
+      <div class="profile-tab-label">perfil.png</div>
       <div class="profile-photo-wrap">
         <img class="profile-photo" src="${PROFILE_PHOTO}" alt="Matheus Rothje" onerror="this.style.display='none'"/>
       </div>
