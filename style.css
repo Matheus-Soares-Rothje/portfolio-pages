@@ -262,10 +262,11 @@ body::after{
 .ch-wrap{padding:28px 32px;}
 .ch-heading{margin-bottom:22px;}
 .ch-heading h2{font-family:'Cinzel',Georgia,serif;font-size:15px;font-weight:700;letter-spacing:.28em;color:rgba(168,255,196,.9);}
-.profile-header{position:relative;width:100%;height:130px;margin-bottom:46px;border-radius:2px;overflow:visible;border:1px solid rgba(34,255,85,.12);}
-.profile-thumb-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.1) brightness(.55);background-color:#081208;}
-.profile-thumb-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,11,2,.15) 0%,rgba(2,11,2,.75) 100%);}
-.profile-photo-wrap{position:absolute;left:18px;bottom:-36px;width:96px;height:96px;border-radius:50%;border:3px solid #020b02;box-shadow:0 0 0 1px rgba(34,255,85,.45),0 0 18px rgba(34,255,85,.25);overflow:hidden;background:#0d1f0d;}
+.profile-header{position:relative;width:100%;height:170px;margin-bottom:52px;border-radius:2px;border:1px solid rgba(34,255,85,.12);}
+.profile-thumb-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(1.1) brightness(.55);background-color:#081208;overflow:hidden;border-radius:2px;}
+.profile-thumb-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,11,2,.1) 0%,rgba(2,11,2,.8) 100%);}
+.profile-photo-wrap{position:absolute;left:18px;bottom:-34px;width:104px;height:104px;background:#0d1f0d;border:1px solid rgba(34,255,85,.45);box-shadow:0 0 0 1px #020b02,0 0 18px rgba(34,255,85,.22);clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%);}
+.profile-tab-label{position:absolute;left:18px;bottom:70px;background:#0d1f0d;border:1px solid rgba(34,255,85,.45);border-bottom:none;padding:2px 9px 3px;font-size:7px;letter-spacing:.18em;color:#22ff55;border-radius:3px 3px 0 0;font-family:'Share Tech Mono',monospace;text-transform:uppercase;}
 .profile-photo{width:100%;height:100%;object-fit:cover;display:block;}
 .about-bio-row{display:flex;gap:16px;margin-bottom:20px;}
 .about-bio-box{flex:1;padding:12px;border:1px solid rgba(34,255,85,.1);background:rgba(34,255,85,.02);border-radius:1px;font-size:12px;color:rgba(168,255,196,.55);line-height:1.7;}
