@@ -218,6 +218,21 @@ function fetchCerts(){
 }
 
 // ── About ──
+window.addEventListener('resize',()=>{ if(currentChapter===0) fixThumbAspect(); });
+
+function fixThumbAspect(){
+  const header=document.querySelector('.profile-header');
+  if(!header) return;
+  const img=new Image();
+  img.onload=()=>{
+    if(!img.naturalWidth||!img.naturalHeight) return;
+    const ratio=img.naturalHeight/img.naturalWidth;
+    const width=header.offsetWidth;
+    if(width>0) header.style.height=Math.round(width*ratio)+'px';
+  };
+  img.src=PROFILE_THUMB;
+}
+
 function renderAbout(){
   if(aboutData===null||aboutData===false){
     fetchAbout();
@@ -236,6 +251,7 @@ function renderAbout(){
     {v:repos.length?`${repos.length}+`:'...', l:'Projetos'},
     {v:totalCerts!==null?`${totalCerts}+`:'...', l:'Certificados'}
   ];
+  setTimeout(fixThumbAspect,0);
   return `<div class="ch-wrap">
     ${chHeading('Sobre Mim')}
     <div class="profile-header">
