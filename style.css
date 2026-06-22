@@ -376,6 +376,8 @@ body::after{
   .toc-nav{
     flex:1;flex-direction:row;gap:4px;padding:0;overflow-x:auto;
     -webkit-overflow-scrolling:touch;
+    mask-image:linear-gradient(to right,#000 85%,transparent 100%);
+    -webkit-mask-image:linear-gradient(to right,#000 85%,transparent 100%);
   }
   .toc-nav::-webkit-scrollbar{height:2px;}
   .toc-btn{
@@ -391,9 +393,10 @@ body::after{
     width:100%;border-left:none;border-top:none;
     border-top:2px solid rgba(34,255,85,.28);
   }
-  .page-running{padding:12px 16px 8px;font-size:7px;letter-spacing:.3em;}
+  .page-running{display:none;}
   .page-footer{padding:10px 16px;}
-  .ch-wrap{padding:18px 16px 28px;}
+  .ch-wrap{padding:14px 16px 28px;}
+  .ch-heading{margin-bottom:14px;}
   .ch-heading h2{font-size:13px;letter-spacing:.2em;}
 
   /* grids em coluna única */
