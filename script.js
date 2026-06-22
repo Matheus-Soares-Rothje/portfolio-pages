@@ -20,6 +20,17 @@ const LOGO_MARK_SVG = 'assets/logo2.png';
 const LOGO_CIRCLE_SVG = 'assets/logo1.png';
 const PROFILE_PHOTO = 'assets/perfil.png';
 const PROFILE_THUMB = 'assets/thumb.png';
+const CODE_LINES = [
+  {n:1, code:'cafe = True'},
+  {n:2, code:''},
+  {n:3, code:'while cafe:'},
+  {n:4, code:'    Matt = "Feliz"'},
+  {n:5, code:'    print(f"Matt está: {Matt}")'},
+  {n:6, code:''},
+  {n:7, code:'    cafe = False'},
+  {n:8, code:''},
+  {n:9, code:'print("Acabou o café... hora de buscar mais.")'},
+];
 
 // Try to load the user's actual logos via object URLs (uploaded)
 document.getElementById('logo-mark-cover').src = LOGO_MARK_SVG;
@@ -220,6 +231,45 @@ function fetchCerts(){
 // ── About ──
 window.addEventListener('resize',()=>{ if(currentChapter===0) fixThumbAspect(); });
 
+async function startCodeTyping(){
+  const el=document.getElementById('thumb-code-lines');
+  if(!el) return;
+
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  while(document.getElementById('thumb-code-lines')===el && document.body.contains(el)){
+    el.innerHTML='';
+    for(const line of CODE_LINES){
+      const row=document.createElement('div');
+      row.className='code-line';
+      const num=document.createElement('span');
+      num.className='ln-num';
+      num.textContent=line.n;
+      const txt=document.createElement('span');
+      txt.className='ln-code';
+      row.appendChild(num);
+      row.appendChild(txt);
+      el.appendChild(row);
+      if(!document.body.contains(el)) return;
+      for(let i=0;i<line.code.length;i++){
+        txt.innerHTML=esc(line.code.slice(0,i+1))+'<span class="code-cursor"></span>';
+        await sleep(14);
+        if(!document.body.contains(el)) return;
+      }
+      txt.innerHTML=esc(line.code);
+      await sleep(60);
+    }
+    await sleep(2200);
+    if(!document.body.contains(el)) return;
+    for(let i=el.children.length-1;i>=0;i--){
+      el.children[i].remove();
+      await sleep(25);
+    }
+    await sleep(500);
+  }
+}
+
 function fixThumbAspect(){
   const header=document.querySelector('.profile-header');
   if(!header) return;
@@ -252,10 +302,16 @@ function renderAbout(){
     {v:totalCerts!==null?`${totalCerts}+`:'...', l:'Certificados'}
   ];
   setTimeout(fixThumbAspect,0);
+  setTimeout(startCodeTyping,0);
   return `<div class="ch-wrap">
     ${chHeading('Sobre Mim')}
     <div class="profile-header">
-      <div class="profile-thumb-bg" style="background-image:url('${PROFILE_THUMB}')"></div>
+      <div class="profile-thumb-bg" style="background-image:url('${PROFILE_THUMB}')">
+        <div class="thumb-code-overlay">
+          <div class="thumb-code-dots"><span></span><span></span><span></span></div>
+          <div class="thumb-code-lines" id="thumb-code-lines"></div>
+        </div>
+      </div>
       <div class="profile-thumb-label">thumb.png</div>
       <div class="profile-tab-label">perfil.png</div>
       <div class="profile-photo-wrap">
