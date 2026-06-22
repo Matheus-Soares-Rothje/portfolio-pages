@@ -259,7 +259,7 @@ function renderAbout(){
       <div class="profile-thumb-label">thumb.png</div>
       <div class="profile-tab-label">perfil.png</div>
       <div class="profile-photo-wrap">
-        <img class="profile-photo" src="${PROFILE_PHOTO}" alt="Matheus Rothje" onerror="this.style.display='none'"/>
+        <img loading="lazy" class="profile-photo" src="${PROFILE_PHOTO}" alt="Matheus Rothje" onerror="this.style.display='none'"/>
       </div>
     </div>
     <div class="about-bio-row">
@@ -283,6 +283,13 @@ function renderAbout(){
 
 // ── Projects ──
 function renderProjects(){
+  if(reposFetchFailed){
+    return `<div class="ch-wrap">
+      ${chHeading('Projetos')}
+      <p class="proj-error">⚠ Não foi possível carregar os projetos do GitHub agora.<br/>Isso pode ser instabilidade momentânea ou limite de requisições da API.</p>
+      <button class="proj-retry-btn" onclick="retryFetchRepos()">↻ Tentar novamente</button>
+    </div>`;
+  }
   if(repos.length===0){
     return `<div class="ch-wrap">
       ${chHeading('Projetos')}
@@ -312,9 +319,9 @@ function buildProjectsHTML(){
         <span>⑂ ${r.forks_count}</span>
       </div>
       <div class="proj-expand" id="expand-${r.name}">
-        ${hasThumb?`<img class="proj-thumb" src="${details.thumb}" alt="thumb" onerror="this.style.display='none'"/>`:''}
+        ${hasThumb?`<img loading="lazy" class="proj-thumb" src="${details.thumb}" alt="thumb" onerror="this.style.display='none'"/>`:''}
         ${hasReadme?`<div class="proj-readme">${escHtml(details.readme.slice(0,800))}${details.readme.length>800?'\n\n[...]':''}</div>`:''}
-        ${hasViewme?`<div class="proj-viewme-row">${details.viewmes.map(url=>`<img class="proj-viewme-img" src="${url}" alt="viewme" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>`:''}
+        ${hasViewme?`<div class="proj-viewme-row">${details.viewmes.map(url=>`<img loading="lazy" class="proj-viewme-img" src="${url}" alt="viewme" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>`:''}
         <a class="proj-link" href="${r.html_url}" target="_blank" rel="noreferrer">↗ Ver no GitHub</a>
       </div>
     </div>`;
@@ -439,7 +446,7 @@ function renderExperiences(){
         <span class="exp-name">${escHtml(exp.titulo)}</span>
       </div>
       ${exp.descricao?`<p class="exp-desc">${escHtml(exp.descricao)}</p>`:''}
-      ${exp.imagens.length?`<div class="exp-img-row">${exp.imagens.map(url=>`<img class="exp-img" src="${url}" alt="${escHtml(exp.titulo)}" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>`:''}
+      ${exp.imagens.length?`<div class="exp-img-row">${exp.imagens.map(url=>`<img loading="lazy" class="exp-img" src="${url}" alt="${escHtml(exp.titulo)}" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>`:''}
       ${exp.links.length?`<div class="exp-links-row">${exp.links.map(l=>`<a class="exp-link" href="${l.url}" target="_blank" rel="noreferrer">${escHtml(l.label)} ↗</a>`).join('')}</div>`:''}
     </div>
   `).join('');
@@ -465,12 +472,36 @@ function bindExperienceEvents(){
 // ── GitHub fetching ──
 let repoLanguages = {}; // { name: ['JavaScript','CSS','HTML'] }
 
+let reposFetchFailed = false;
+const REPOS_CACHE_KEY='mattz_repos_v1';
+const REPOS_CACHE_TTL=30*60*1000; // 30 minutos
+
 async function fetchRepos(){
+  // tenta cache primeiro pra exibir algo instantâneo
+  try{
+    const cached=JSON.parse(localStorage.getItem(REPOS_CACHE_KEY)||'null');
+    if(cached&&cached.ts&&(Date.now()-cached.ts)<REPOS_CACHE_TTL&&Array.isArray(cached.data)){
+      repos=cached.data;
+      if(currentChapter===1){
+        document.getElementById('page-content').innerHTML=buildProjectsHTML();
+        bindProjectEvents();
+      }
+      if(currentChapter===0){
+        document.getElementById('page-content').innerHTML=renderAbout();
+      }
+      fetchAllRepoLanguages();
+      return;
+    }
+  }catch(e){}
+
   try{
     const r=await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=20`);
+    if(!r.ok) throw new Error('status '+r.status);
     const data=await r.json();
     if(Array.isArray(data)){
       repos=data.filter(r=>!r.fork);
+      reposFetchFailed=false;
+      try{ localStorage.setItem(REPOS_CACHE_KEY,JSON.stringify({ts:Date.now(),data:repos})); }catch(e){}
       if(currentChapter===1){
         document.getElementById('page-content').innerHTML=buildProjectsHTML();
         bindProjectEvents();
@@ -480,7 +511,20 @@ async function fetchRepos(){
       }
       fetchAllRepoLanguages();
     }
-  }catch(e){console.warn('GitHub fetch failed',e);}
+  }catch(e){
+    console.warn('GitHub fetch failed',e);
+    reposFetchFailed=true;
+    if(currentChapter===1){
+      document.getElementById('page-content').innerHTML=renderProjects();
+    }
+  }
+}
+
+function retryFetchRepos(){
+  reposFetchFailed=false;
+  try{ localStorage.removeItem(REPOS_CACHE_KEY); }catch(e){}
+  if(currentChapter===1) document.getElementById('page-content').innerHTML=renderProjects();
+  fetchRepos();
 }
 
 async function fetchAllRepoLanguages(){
@@ -554,9 +598,9 @@ async function loadRepoDetails(name){
     const langColor=LANG_COLOR[repo.language]||'#22ff55';
     const hasThumb=true; // will hide via onerror
     exp.innerHTML=`
-      <img class="proj-thumb" src="${details.thumb}" alt="thumb" onerror="this.style.display='none'"/>
+      <img loading="lazy" class="proj-thumb" src="${details.thumb}" alt="thumb" onerror="this.style.display='none'"/>
       ${details.readme?`<div class="proj-readme">${escHtml(details.readme.slice(0,800))}${details.readme.length>800?'\n\n[...]':''}</div>`:''}
-      <div class="proj-viewme-row">${details.viewmes.map(url=>`<img class="proj-viewme-img" src="${url}" alt="viewme" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>
+      <div class="proj-viewme-row">${details.viewmes.map(url=>`<img loading="lazy" class="proj-viewme-img" src="${url}" alt="viewme" onerror="this.style.display='none'" data-full="${url}"/>`).join('')}</div>
       <a class="proj-link" href="https://github.com/${GITHUB_USER}/${name}" target="_blank" rel="noreferrer">↗ Ver no GitHub</a>
     `;
     exp.querySelectorAll('.proj-viewme-img').forEach(img=>{
@@ -660,12 +704,29 @@ function renderContact(){
         <span style="margin-left:auto;font-size:10px;color:rgba(168,255,196,.25);">↗</span>
       </a>`).join('')}
     </div>
+    <button class="share-btn" id="share-link-btn" onclick="shareSite()">⇪ Compartilhar este portfólio</button>
     ${ornament(0.18)}
     <div class="contact-sign">
-      <img src="${LOGO_MARK_SVG}" alt="mark" style="width:52px;height:52px;object-fit:contain;opacity:.3;margin:0 auto;"/>
+      <img loading="lazy" src="${LOGO_MARK_SVG}" alt="mark" style="width:52px;height:52px;object-fit:contain;opacity:.3;margin:0 auto;"/>
       <p>MATT'Z · MMXXV</p>
     </div>
   </div>`;
+}
+
+function shareSite(){
+  const url=window.location.href;
+  const btn=document.getElementById('share-link-btn');
+  if(navigator.share){
+    navigator.share({title:"Matt'z — Codex Digital",url}).catch(()=>{});
+    return;
+  }
+  navigator.clipboard.writeText(url).then(()=>{
+    if(btn){
+      const original=btn.textContent;
+      btn.textContent='✓ Link copiado!';
+      setTimeout(()=>{ btn.textContent=original; },2000);
+    }
+  }).catch(()=>{});
 }
 
 // initial render
