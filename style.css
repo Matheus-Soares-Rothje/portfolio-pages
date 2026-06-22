@@ -430,6 +430,7 @@ body::after{
   .profile-header{margin-top:10px;margin-bottom:44px;}
   .profile-photo-wrap{width:84px;height:84px;left:12px;bottom:-28px;}
   .profile-tab-label,.profile-thumb-label{font-size:6px;padding:2px 7px 3px;}
+  .thumb-code-overlay{display:none;}
   .about-bio-row{margin-top:6px;}
   .about-bio-box{font-size:13px;padding:12px;color:rgba(200,255,215,.85);line-height:1.75;}
 

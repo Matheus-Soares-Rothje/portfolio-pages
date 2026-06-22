@@ -239,6 +239,7 @@ async function startCodeTyping(){
   const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
   while(document.getElementById('thumb-code-lines')===el && document.body.contains(el)){
+    if(el.offsetParent===null){ await sleep(500); continue; }
     el.innerHTML='';
     for(const line of CODE_LINES){
       const row=document.createElement('div');
