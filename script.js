@@ -229,6 +229,38 @@ function fetchCerts(){
 }
 
 // ── About ──
+// ── PAINEL DE DIAGNÓSTICO TEMPORÁRIO ──
+(function(){
+  try{
+    const btn=document.querySelector('.toc-btn:not(.active)');
+    const allBtns=document.querySelectorAll('.toc-btn');
+    let btnInfo='nenhum botão .toc-btn encontrado';
+    if(btn){
+      const cs=getComputedStyle(btn);
+      btnInfo=`display:${cs.display} | visibility:${cs.visibility} | opacity:${cs.opacity} | width:${cs.width} | bg:${cs.backgroundColor} | border:${cs.borderColor}`;
+    }
+    const mobileCssLoaded=Array.from(document.styleSheets).some(s=>{
+      try{ return s.href && s.href.includes('mobile.css'); }catch(e){ return false; }
+    });
+    const panel=document.createElement('div');
+    panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font-family:monospace;font-size:9px;padding:8px;line-height:1.5;max-height:40vh;overflow-y:auto;border-bottom:3px solid red;';
+    panel.innerHTML=`
+      <b>DIAGNÓSTICO (apagar depois)</b><br/>
+      innerWidth: ${window.innerWidth}px | innerHeight: ${window.innerHeight}px<br/>
+      devicePixelRatio: ${window.devicePixelRatio}<br/>
+      matchMedia 760px: ${window.matchMedia('(max-width:760px)').matches}<br/>
+      mobile.css carregado: ${mobileCssLoaded}<br/>
+      qtd .toc-btn no DOM: ${allBtns.length}<br/>
+      estilo do botão "Projetos": ${btnInfo}<br/>
+      userAgent: ${navigator.userAgent.slice(0,90)}<br/>
+      <button onclick="this.parentElement.remove()" style="margin-top:6px;padding:4px 8px;">Fechar este painel</button>
+    `;
+    document.body.appendChild(panel);
+  }catch(e){
+    console.error('Erro no diagnóstico',e);
+  }
+})();
+
 window.addEventListener('resize',()=>{ if(currentChapter===0) fixThumbAspect(); });
 
 async function startCodeTyping(){
