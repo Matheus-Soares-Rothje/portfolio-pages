@@ -81,13 +81,13 @@
   padding:9px 12px;
   font-size:10.5px;
   gap:6px;
-  border:1px solid rgba(34,255,85,.32);
-  background:rgba(34,255,85,.05);
+  border:1px solid #1f7a3a;
+  background:#0a1d0e;
 }
-.toc-btn .toc-label-text{color:rgba(215,255,225,.8);}
+.toc-btn .toc-label-text{color:#9fe8b5;}
 .toc-btn.active{
-  background:rgba(34,255,85,.24);
-  border-color:rgba(34,255,85,.7);
+  background:#123d1d;
+  border-color:#22ff55;
 }
 .toc-btn.active .toc-label-text{color:#eaffef;}
 
@@ -98,7 +98,9 @@
   font-size:8px;
   letter-spacing:.05em;
   gap:4px;
-  border-color:rgba(34,255,85,.32);
+  border:1px solid #1f7a3a;
+  background:#0a1d0e;
+  color:#9fe8b5;
 }
 
 /* ── corpo da página ── */

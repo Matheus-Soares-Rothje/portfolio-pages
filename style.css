@@ -1,7 +1,8 @@
 /* ── reset & base ── */
+:root{color-scheme:dark;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 ul,li{list-style:none;}
-html,body{height:100%;}
+html,body{height:100%;forced-color-adjust:none;}
 body{
   background:#020b02;
   color:#a8ffc4;
