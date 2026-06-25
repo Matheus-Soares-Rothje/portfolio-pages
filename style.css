@@ -248,6 +248,7 @@ body::after{
 .toc-close{margin:8px 12px 12px;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgba(34,255,85,.14);border-radius:1px;background:transparent;color:#4a8a5a;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em;transition:border-color .15s;}
 .toc-close:hover{border-color:rgba(34,255,85,.35);}
 .toc-pagenum{position:absolute;bottom:10px;right:14px;font-size:8px;color:rgba(168,255,196,.18);font-family:'Cinzel',Georgia,serif;}
+.toc-fade{display:none;}
 .book-spine-center{width:8px;flex-shrink:0;background:linear-gradient(90deg,rgba(0,0,0,.5) 0%,rgba(34,255,85,.18) 40%,rgba(34,255,85,.22) 60%,rgba(0,0,0,.4) 100%);position:relative;}
 .book-spine-center p{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:7px;letter-spacing:.4em;color:rgba(34,255,85,.25);white-space:nowrap;font-family:'Cinzel',Georgia,serif;writing-mode:vertical-rl;}
 .page-right{flex:1;display:flex;flex-direction:column;background:linear-gradient(180deg,#030e03 0%,#020b02 100%);border-top:2px solid rgba(34,255,85,.28);border-right:2px solid rgba(34,255,85,.28);border-bottom:2px solid rgba(34,255,85,.28);position:relative;overflow:hidden;}
@@ -389,10 +390,14 @@ body::after{
   .toc-nav{
     flex:1;flex-direction:row;gap:4px;padding:0;overflow-x:auto;
     -webkit-overflow-scrolling:touch;
-    mask-image:linear-gradient(to right,#000 85%,transparent 100%);
-    -webkit-mask-image:linear-gradient(to right,#000 85%,transparent 100%);
+    position:relative;
   }
   .toc-nav::-webkit-scrollbar{height:2px;}
+  .toc-fade{
+    display:block;position:absolute;right:64px;top:0;bottom:0;width:28px;
+    background:linear-gradient(to right,transparent,#020c02);
+    pointer-events:none;z-index:2;
+  }
   .toc-btn{
     width:auto;flex-shrink:0;white-space:nowrap;padding:9px 12px;font-size:10.5px;gap:6px;
     border:1px solid rgba(34,255,85,.3);background:rgba(34,255,85,.04);
