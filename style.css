@@ -343,13 +343,13 @@ body::after{
 .cert-row .cert-row-meta{color:#4a8a5a;font-size:9px;white-space:nowrap;}
 .skills-block{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .contact-links{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
-.contact-link{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid rgba(34,255,85,.1);background:rgba(34,255,85,.018);border-radius:1px;text-decoration:none;transition:border-color .15s;}
-.contact-link:hover{border-color:rgba(34,255,85,.32);}
-.contact-link-icon{font-size:18px;flex-shrink:0;}
+.contact-link{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid rgba(34,255,85,.18);background:rgba(34,255,85,.03);border-radius:1px;text-decoration:none;transition:border-color .15s;}
+.contact-link:hover{border-color:rgba(34,255,85,.4);}
+.contact-link-icon{font-size:18px;flex-shrink:0;display:flex;}
 .contact-link-label{font-size:9px;color:#4a8a5a;}
-.contact-link-value{font-size:12px;color:rgba(168,255,196,.6);}
+.contact-link-value{font-size:12px;color:rgba(168,255,196,.7);}
 .contact-sign{text-align:center;margin-top:24px;}
-.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;margin-top:4px;background:rgba(34,255,85,.025);border:1px solid rgba(34,255,85,.16);color:rgba(168,255,196,.6);border-radius:1px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;}
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;margin-top:4px;background:rgba(34,255,85,.04);border:1px solid rgba(34,255,85,.25);color:rgba(168,255,196,.7);border-radius:1px;font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;}
 .share-btn:hover{border-color:rgba(34,255,85,.4);color:#22ff55;}
 .contact-sign img{width:52px;height:52px;object-fit:contain;opacity:.3;margin:0 auto;animation:glowPulse 4s ease-in-out infinite;}
 .contact-sign p{font-size:8px;color:rgba(168,255,196,.25);letter-spacing:.55em;margin-top:10px;text-transform:uppercase;font-family:'Cinzel',Georgia,serif;}
@@ -445,8 +445,10 @@ body::after{
   .exp-card-header{padding:12px 12px 8px;}
   .exp-name{font-size:13px;}
   .exp-desc{font-size:11.5px;color:#6cb87f;}
-  .contact-link{padding:12px;gap:10px;}
-  .contact-link-value{font-size:12.5px;word-break:break-all;color:rgba(200,255,215,.8);}
+  .contact-link{padding:14px;gap:10px;border-color:rgba(34,255,85,.3);background:rgba(34,255,85,.045);}
+  .contact-link-value{font-size:12.5px;word-break:break-all;color:rgba(200,255,215,.85);}
+  .contact-link-label{font-size:9.5px;color:#6cb87f;}
+  .share-btn{padding:13px;border-color:rgba(34,255,85,.35);background:rgba(34,255,85,.05);color:rgba(200,255,215,.85);font-size:11.5px;}
   .proj-readme{font-size:12px;color:rgba(200,255,215,.8);}
 }
 
