@@ -744,9 +744,9 @@ function renderCerts(){
 // ── Contact ──
 function renderContact(){
   const links=[
-    {label:'GitHub',   value:`github.com/${GITHUB_USER}`,   href:`https://github.com/${GITHUB_USER}`,   icon:'⌥', color:'#a8ffc4'},
-    {label:'LinkedIn', value:'linkedin.com/in/matheus-rothje', href:'https://www.linkedin.com/in/matheus-rothje-484a8036b/', icon:'in', color:'#0ea5e9'},
-    {label:'E-mail',   value:'contato@mattz.dev',            href:'mailto:contato@mattz.dev',             icon:'@',  color:'#22ff55'},
+    {label:'GitHub',   value:`github.com/${GITHUB_USER}`,   href:`https://github.com/${GITHUB_USER}`,   icon:`<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>`, color:'#a8ffc4'},
+    {label:'LinkedIn', value:'linkedin.com/in/matheus-rothje', href:'https://www.linkedin.com/in/matheus-rothje-484a8036b/', icon:`<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15zM4.94 13.46V6.17H2.6v7.29h2.34zM3.77 5.16c.82 0 1.33-.54 1.33-1.22-.01-.69-.51-1.22-1.31-1.22-.8 0-1.33.53-1.33 1.22 0 .68.51 1.22 1.3 1.22h.01zM6.94 13.46h2.34V9.4c0-.22.02-.43.08-.59.18-.43.58-.88 1.25-.88.88 0 1.23.67 1.23 1.65v3.88h2.34V9.32c0-2.16-1.15-3.17-2.69-3.17-1.24 0-1.79.69-2.1 1.17h.02V6.17H6.94c.03.66 0 7.29 0 7.29z"/></svg>`, color:'#0ea5e9'},
+    {label:'E-mail',   value:'contato@mattz.dev',            href:'mailto:contato@mattz.dev',             icon:`<svg viewBox="0 0 16 16" width="18" height="18" fill="currentColor"><path d="M.05 3.5A2 2 0 012 2h12a2 2 0 011.95 1.5L8 8.5.05 3.5zM0 4.7V12a2 2 0 002 2h12a2 2 0 002-2V4.7l-7.74 4.84a1 1 0 01-1.04 0L0 4.7z"/></svg>`, color:'#22ff55'},
   ];
   return `<div class="ch-wrap">
     ${chHeading('Contato')}
