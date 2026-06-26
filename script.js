@@ -232,32 +232,37 @@ function fetchCerts(){
 // ── PAINEL DE DIAGNÓSTICO TEMPORÁRIO ──
 (function(){
   try{
-    const btn=document.querySelector('.toc-btn:not(.active)');
+    const fmtRect=el=>{
+      if(!el) return 'elemento não encontrado';
+      const r=el.getBoundingClientRect();
+      const cs=getComputedStyle(el);
+      return `x:${r.x.toFixed(0)} y:${r.y.toFixed(0)} w:${r.width.toFixed(0)} h:${r.height.toFixed(0)} | overflow:${cs.overflow} ${cs.overflowX}/${cs.overflowY} | flex:${cs.flexGrow} ${cs.flexShrink} ${cs.flexBasis}`;
+    };
+    const pageLeft=document.querySelector('.page-left');
+    const tocNav=document.querySelector('.toc-nav');
+    const tocClose=document.querySelector('.toc-close');
+    const firstBtn=document.querySelector('.toc-btn');
     const allBtns=document.querySelectorAll('.toc-btn');
-    let btnInfo='nenhum botão .toc-btn encontrado';
-    if(btn){
-      const cs=getComputedStyle(btn);
-      btnInfo=`display:${cs.display} | visibility:${cs.visibility} | opacity:${cs.opacity} | width:${cs.width} | bg:${cs.backgroundColor} | border:${cs.borderColor}`;
-    }
     const mobileCssLoaded=Array.from(document.styleSheets).some(s=>{
       try{ return s.href && s.href.includes('mobile.css'); }catch(e){ return false; }
     });
     const panel=document.createElement('div');
-    panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font-family:monospace;font-size:9px;padding:8px;line-height:1.5;max-height:40vh;overflow-y:auto;border-bottom:3px solid red;';
+    panel.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#000;color:#0f0;font-family:monospace;font-size:8.5px;padding:8px;line-height:1.6;max-height:55vh;overflow-y:auto;border-bottom:3px solid red;';
     panel.innerHTML=`
-      <b>DIAGNÓSTICO (apagar depois)</b><br/>
-      innerWidth: ${window.innerWidth}px | innerHeight: ${window.innerHeight}px<br/>
-      devicePixelRatio: ${window.devicePixelRatio}<br/>
-      matchMedia 760px: ${window.matchMedia('(max-width:760px)').matches}<br/>
+      <b>DIAGNÓSTICO 2 (apagar depois)</b><br/>
+      innerWidth: ${window.innerWidth}px<br/>
       mobile.css carregado: ${mobileCssLoaded}<br/>
-      qtd .toc-btn no DOM: ${allBtns.length}<br/>
-      estilo do botão "Projetos": ${btnInfo}<br/>
-      userAgent: ${navigator.userAgent.slice(0,90)}<br/>
-      <button onclick="this.parentElement.remove()" style="margin-top:6px;padding:4px 8px;">Fechar este painel</button>
+      qtd .toc-btn: ${allBtns.length}<br/>
+      <br/><b>.page-left</b><br/>${fmtRect(pageLeft)}<br/>
+      <br/><b>.toc-nav</b><br/>${fmtRect(tocNav)}<br/>
+      <br/><b>.toc-close</b><br/>${fmtRect(tocClose)}<br/>
+      <br/><b>1º .toc-btn (Sobre Mim)</b><br/>${fmtRect(firstBtn)}<br/>
+      <br/><button onclick="this.parentElement.remove()" style="margin-top:6px;padding:4px 8px;">Fechar este painel</button>
     `;
     document.body.appendChild(panel);
   }catch(e){
     console.error('Erro no diagnóstico',e);
+    alert('Erro no diagnóstico: '+e.message);
   }
 })();
 
