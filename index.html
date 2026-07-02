@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- dvh: corrige 100vh no mobile (considera barra do browser) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Portfolio — desenvolvedor web front-end especializado em React, TypeScript e design systems" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Open Graph -->
+    <meta property="og:title"       content="Portfolio" />
+    <meta property="og:description" content="Desenvolvedor front-end — React · TypeScript · Design Systems" />
+    <meta property="og:type"        content="website" />
+
+    <!-- Preconnect: reduz latência das fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Fontes com display=swap para não bloquear render -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/persona-portfolio/favicon.ico" />
+    <title>Portfolio · Dev Front-End</title>
+
+    <!-- Skip link para acessibilidade -->
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: 0;
+        background: #e2001a;
+        color: #fff;
+        padding: 0.5em 1em;
+        font-family: sans-serif;
+        font-weight: 700;
+        z-index: 10000;
+        text-decoration: none;
+      }
+      .skip-link:focus { top: 0; }
+    </style>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
