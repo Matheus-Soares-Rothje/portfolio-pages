@@ -1,0 +1,16 @@
+// ─── Typography ─────────────────────────────────────────────────────────────
+// Import from Google Fonts in index.html or use @font-face here
+
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  // Place Rajdhani-Bold.woff2 in public/assets/fonts/ if self-hosting
+  // Otherwise handled via Google Fonts link in index.html
+}
+
+$font-primary:   'Rajdhani', 'Impact', sans-serif;
+$font-display:   'Bebas Neue', 'Impact', sans-serif;
+$font-body:      'Rajdhani', system-ui, sans-serif;
+$font-mono:      'JetBrains Mono', 'Courier New', monospace;

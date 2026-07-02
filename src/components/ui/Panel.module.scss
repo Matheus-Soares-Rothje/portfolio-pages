@@ -1,0 +1,98 @@
+// ─── Base Panel ───────────────────────────────────────────────────────────────
+.panel {
+  position: relative;
+  background-color: var(--p5-black-panel);
+  border: 2px solid var(--p5-gray-mid);
+  overflow: hidden;
+
+  // Subtle diagonal stripe texture
+  background-image: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 18px,
+    rgba(255, 255, 255, 0.012) 18px,
+    rgba(255, 255, 255, 0.012) 20px
+  );
+}
+
+// ─── Accent – top-left diagonal slash ────────────────────────────────────────
+.panel__accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 28px solid var(--p5-red);
+  border-right: 28px solid transparent;
+  z-index: 2;
+}
+
+.panel__content {
+  position: relative;
+  z-index: 1;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: 2px solid var(--p5-gray-mid);
+  background-color: rgba(255,255,255,0.02);
+}
+
+// ─── Variants ─────────────────────────────────────────────────────────────────
+.panel--default {
+  // base is sufficient
+}
+
+.panel--inset {
+  border-color: var(--p5-gray-dark);
+  background-color: rgba(0, 0, 0, 0.6);
+  box-shadow: var(--shadow-inset);
+}
+
+.panel--glass {
+  background-color: rgba(25, 25, 25, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.panel--bordered {
+  border: var(--border-3) solid var(--p5-white);
+  box-shadow: var(--shadow-xl);
+}
+
+.panel--spotlight {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(226, 0, 26, 0.12) 0%,
+    var(--p5-black-panel) 65%
+  );
+  border-color: var(--p5-red);
+}
+
+// ─── Modifiers ────────────────────────────────────────────────────────────────
+.panel--glowing {
+  box-shadow: var(--glow-md);
+  border-color: var(--p5-red);
+}
+
+// Scanline overlay
+.panel--scanlines {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.08) 3px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 3;
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "projeto-2",
+  "title": "Projeto Dois",
+  "description": "Descrição detalhada do projeto. Edite este arquivo JSON para atualizar o conteúdo sem tocar em código.",
+  "imageUrl": "/persona-portfolio/assets/projects/projeto-2.jpg",
+  "tags": ["Node.js", "API", "PostgreSQL"],
+  "repoUrl": "https://github.com/usuario/projeto-2",
+  "order": 2
+}

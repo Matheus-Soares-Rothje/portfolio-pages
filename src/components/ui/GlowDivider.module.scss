@@ -1,0 +1,24 @@
+.divider {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--p5-red) 0%,
+    rgba(226, 0, 26, 0.4) 60%,
+    transparent 100%
+  );
+  box-shadow: var(--glow-sm);
+  flex-shrink: 0;
+}
+
+.divider--vertical {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    var(--p5-red) 0%,
+    rgba(226, 0, 26, 0.4) 60%,
+    transparent 100%
+  );
+}

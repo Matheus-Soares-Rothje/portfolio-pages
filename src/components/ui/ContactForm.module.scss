@@ -1,0 +1,123 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ContactForm.module.scss
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+.form {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--sp-5);
+  width:          100%;
+}
+
+// Grid de 2 colunas para nome + email
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── Botão de envio ───────────────────────────────────────────────────────────
+.submitWrap {
+  display:     flex;
+  align-items: center;
+  gap:         var(--sp-4);
+  margin-top:  var(--sp-2);
+}
+
+.submitBtn {
+  position:       relative;
+  font-family:    var(--font-heading);
+  font-size:      var(--text-base);
+  font-weight:    700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding:        0.7em 2.4em 0.7em 1.6em;
+  background:     var(--p5-red);
+  color:          var(--p5-white);
+  border:         2px solid var(--p5-red);
+  clip-path:      var(--clip-banner);
+  cursor:         pointer;
+  box-shadow:     3px 3px 0 var(--p5-red-dark);
+  transition:
+    box-shadow   var(--duration-base) var(--ease-out-expo),
+    transform    var(--duration-fast) var(--ease-out-expo),
+    background   var(--duration-base);
+
+  &:hover:not(:disabled) {
+    box-shadow: var(--glow-md), 3px 3px 0 var(--p5-red-dark);
+    transform:  translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform:  translateY(1px);
+    box-shadow: 1px 1px 0 var(--p5-red-dark);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor:  not-allowed;
+  }
+
+  // Spinner de envio
+  &--sending::after {
+    content:       '';
+    position:      absolute;
+    right:         var(--sp-4);
+    top:           50%;
+    transform:     translateY(-50%);
+    width:         12px;
+    height:        12px;
+    border:        2px solid rgba(255,255,255,0.3);
+    border-top:    2px solid var(--p5-white);
+    border-radius: 50%;
+    animation:     spin 0.7s linear infinite;
+  }
+}
+
+// ─── Feedback de status ───────────────────────────────────────────────────────
+.statusMsg {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  font-weight:    700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+  animation:      p5-slide-left 0.35s var(--ease-out-expo) both;
+
+  &--success {
+    color: #44cc88;
+    &::before { content: '✓'; font-size: var(--text-base); }
+  }
+
+  &--error {
+    color: #ff4444;
+    &::before { content: '✕'; font-size: var(--text-base); }
+  }
+}
+
+@keyframes spin {
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+
+// ─── Mobile: botão de submit full-width ──────────────────────────────────────
+@media (max-width: 639px) {
+  .submitWrap {
+    flex-direction: column;
+    align-items:    stretch;
+  }
+
+  .submitBtn {
+    clip-path: none;         // sem diagonal — mais fácil de tocar
+    padding:   0.8em 1.4em;
+    text-align:center;
+    width:     100%;
+  }
+}

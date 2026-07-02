@@ -1,0 +1,16 @@
+.bullet {
+  display: inline-block;
+  border-radius: 50%;
+  background-color: var(--p5-red);
+  flex-shrink: 0;
+  transition: box-shadow var(--duration-base);
+}
+
+.bullet--sm  { width: 8px;  height: 8px; }
+.bullet--md  { width: 12px; height: 12px; }
+.bullet--lg  { width: 16px; height: 16px; }
+
+.bullet--active {
+  animation: p5-pulse-red 2s ease-in-out infinite;
+  box-shadow: var(--glow-sm);
+}

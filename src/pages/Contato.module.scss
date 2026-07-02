@@ -1,0 +1,518 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Contato.module.scss — terminal de comunicação estilo RPG
+// Layout: painel de transmissão (esq) + personagem full-height (dir)
+// Referência: tela de codec (Metal Gear), menu de mensagens (P5)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Tela raiz ────────────────────────────────────────────────────────────────
+.screen {
+  position:   relative;
+  width:      100%;
+  min-height: 100dvh;
+  display:    grid;
+  grid-template-columns: 480px 1fr;
+  background: var(--p5-black-pure);
+  overflow:   hidden;
+}
+
+// ─── Fundo ────────────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  // Scanlines CRT
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 3px,
+      rgba(0, 0, 0, 0.07) 3px, rgba(0, 0, 0, 0.07) 4px
+    );
+    z-index: 1;
+  }
+
+  // Faixas diagonais
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -52deg,
+      transparent, transparent 28px,
+      rgba(226, 0, 26, 0.018) 28px, rgba(226, 0, 26, 0.018) 56px
+    );
+    animation: p5-stripe-march 5s linear infinite;
+  }
+}
+
+// ─── Coluna esquerda — painel de transmissão ──────────────────────────────────
+.panel {
+  position:   relative;
+  z-index:    3;
+  display:    flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: rgba(0, 0, 0, 0.6);
+  border-right: 1px solid var(--p5-gray-mid);
+
+  // Linha vermelha de borda esquerda
+  &::before {
+    content:    '';
+    position:   absolute;
+    top: 0; left: 0; bottom: 0;
+    width:      4px;
+    background: linear-gradient(to bottom, var(--p5-red), transparent 80%);
+    box-shadow: var(--glow-sm);
+  }
+}
+
+// ─── HUD topo do painel ───────────────────────────────────────────────────────
+.panelHud {
+  display:    flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:    var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid var(--p5-gray-mid);
+  background: rgba(226, 0, 26, 0.06);
+  flex-shrink: 0;
+  animation: p5-slide-left 0.4s var(--ease-out-expo) 0.05s both;
+}
+
+.hudLeft {
+  display:    flex;
+  flex-direction: column;
+  gap:        2px;
+}
+
+.hudLabel {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::before {
+    content:    '';
+    display:    inline-block;
+    width:      14px;
+    height:     2px;
+    background: var(--p5-red);
+  }
+}
+
+.hudTitle {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  color:          var(--p5-white);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow:    3px 3px 0 var(--p5-red-dark);
+  line-height:    1;
+}
+
+// Indicador de sinal
+.signalWrap {
+  display:    flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap:        var(--sp-1);
+}
+
+.signalLabel {
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+}
+
+.signalBars {
+  display:    flex;
+  align-items: flex-end;
+  gap:        3px;
+  height:     16px;
+}
+
+.signalBar {
+  width:        4px;
+  background:   var(--p5-red);
+  box-shadow:   var(--glow-sm);
+  animation:    p5-pulse-red 1.5s ease-in-out infinite;
+
+  &:nth-child(1) { height: 4px;  animation-delay: 0s; }
+  &:nth-child(2) { height: 8px;  animation-delay: 0.15s; }
+  &:nth-child(3) { height: 12px; animation-delay: 0.30s; }
+  &:nth-child(4) { height: 16px; animation-delay: 0.45s; }
+}
+
+// ─── Cabeçalho do painel ─────────────────────────────────────────────────────
+.panelHeader {
+  padding:    var(--sp-6) var(--sp-6) var(--sp-4);
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--sp-2);
+  border-bottom: 1px solid var(--p5-gray-mid);
+  flex-shrink: 0;
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.1s both;
+}
+
+.headerEyebrow {
+  font-family:    var(--font-heading);
+  font-size:      10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+
+  &::before { content: '// '; color: var(--p5-gray-light); }
+}
+
+.headerTitle {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.5rem, 4.5vw, var(--text-4xl));
+  color:          var(--p5-white);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height:    0.9;
+  text-shadow:    4px 4px 0 var(--p5-red-dark);
+}
+
+.headerDesc {
+  font-family:  var(--font-body);
+  font-size:    var(--text-sm);
+  font-weight:  500;
+  line-height:  1.65;
+  color:        var(--p5-white-dim);
+  border-left:  3px solid var(--p5-red);
+  padding-left: var(--sp-3);
+  margin-top:   var(--sp-1);
+}
+
+// ─── Lista de canais de contato ───────────────────────────────────────────────
+.channelList {
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--sp-1);
+  padding:    var(--sp-4) var(--sp-4);
+  flex:       1;
+}
+
+.channelLabel {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  padding:        0 var(--sp-2) var(--sp-2);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::after {
+    content:    '';
+    flex:       1;
+    height:     1px;
+    background: var(--p5-gray-mid);
+  }
+}
+
+// ─── Item de canal ────────────────────────────────────────────────────────────
+.channel {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--sp-4);
+  padding:         var(--sp-3) var(--sp-4);
+  text-decoration: none;
+  background:      transparent;
+  border:          1px solid transparent;
+  border-left:     3px solid transparent;
+  clip-path:       polygon(0 0, 100% 0, 97% 100%, 0 100%);
+  transition:
+    background   var(--duration-base) var(--ease-out-expo),
+    border-color var(--duration-base) var(--ease-out-expo),
+    transform    var(--duration-fast) var(--ease-out-expo);
+  animation: p5-slide-left 0.4s var(--ease-out-expo) both;
+
+  &:hover {
+    background:   rgba(226, 0, 26, 0.1);
+    border-color: var(--p5-gray-mid);
+    border-left-color: var(--p5-red);
+    transform:    translateX(4px);
+  }
+
+  &:hover .channelIcon    { background: var(--p5-red); color: var(--p5-white); }
+  &:hover .channelArrow   { opacity: 1; transform: translateX(0); }
+  &:hover .channelValue   { color: var(--p5-white); }
+  &:active                { transform: translateX(6px); }
+}
+
+// Ícone do canal (símbolo SVG/texto)
+.channelIcon {
+  width:           40px;
+  height:          40px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      var(--p5-black-panel);
+  border:          1px solid var(--p5-gray-mid);
+  clip-path:       var(--clip-corner-tr);
+  flex-shrink:     0;
+  font-size:       var(--text-lg);
+  color:           var(--p5-gray-light);
+  transition:      background var(--duration-base), color var(--duration-base);
+}
+
+// Textos do canal
+.channelBody {
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+  flex:           1;
+  min-width:      0;
+}
+
+.channelName {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+}
+
+.channelValue {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  font-weight:    700;
+  letter-spacing: 0.06em;
+  color:          var(--p5-white-dim);
+  white-space:    nowrap;
+  overflow:       hidden;
+  text-overflow:  ellipsis;
+  transition:     color var(--duration-base);
+}
+
+// Seta de ação
+.channelArrow {
+  font-size:    var(--text-base);
+  color:        var(--p5-red);
+  flex-shrink:  0;
+  opacity:      0;
+  transform:    translateX(-6px);
+  transition:   opacity var(--duration-base), transform var(--duration-base) var(--ease-out-expo);
+}
+
+// ─── Rodapé do painel ────────────────────────────────────────────────────────
+.panelFooter {
+  padding:    var(--sp-4) var(--sp-6) var(--sp-6);
+  border-top: 1px solid var(--p5-gray-mid);
+  flex-shrink:0;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--sp-3);
+  animation: p5-slide-left 0.4s var(--ease-out-expo) 0.5s both;
+}
+
+.footerHint {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::before {
+    content:  '◆';
+    color:    var(--p5-red);
+    font-size:8px;
+    animation:p5-pulse-red 2s ease-in-out infinite;
+  }
+}
+
+.footerActions {
+  display:    flex;
+  gap:        var(--sp-3);
+  flex-wrap:  wrap;
+}
+
+// ─── Coluna direita — personagem ─────────────────────────────────────────────
+.characterCol {
+  position:   relative;
+  z-index:    2;
+  display:    flex;
+  align-items:flex-end;
+  justify-content: center;
+  overflow:   hidden;
+  min-height: 100dvh;
+}
+
+.characterBg {
+  position:   absolute;
+  inset:      0;
+  background: linear-gradient(
+    160deg,
+    rgba(226, 0, 26, 0.12) 0%,
+    transparent            50%,
+    rgba(0, 0, 0, 0.6)    100%
+  );
+}
+
+// Linha de divisão esquerda
+.characterEdge {
+  position:   absolute;
+  top: 0; left: 0; bottom: 0;
+  width:      2px;
+  background: linear-gradient(to bottom, var(--p5-red), transparent 60%);
+  box-shadow: var(--glow-sm);
+}
+
+.character {
+  position:   relative;
+  z-index:    1;
+  height:     94vh;
+  max-height: 900px;
+  width:      auto;
+  max-width:  100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter:
+    drop-shadow(-6px 0 28px rgba(226, 0, 26, 0.22))
+    drop-shadow(0 24px 48px rgba(0, 0, 0, 0.9));
+  animation:  p5-float 5s ease-in-out infinite;
+  user-select:none;
+  pointer-events: none;
+}
+
+.characterGlow {
+  position:   absolute;
+  bottom:     0;
+  left:       50%;
+  transform:  translateX(-50%);
+  width:      60%;
+  height:     60px;
+  background: radial-gradient(ellipse at center,
+    rgba(226, 0, 26, 0.24), transparent 70%
+  );
+  z-index:    0;
+  animation:  p5-pulse-glow 3.5s ease-in-out infinite;
+}
+
+// Número de seção fantasma
+.bgNumber {
+  position:    absolute;
+  bottom:      -2%;
+  right:       var(--sp-6);
+  font-family: var(--font-display);
+  font-size:   18vw;
+  line-height: 1;
+  color:       var(--p5-red);
+  opacity:     0.04;
+  letter-spacing: -0.06em;
+  pointer-events: none;
+  user-select: none;
+  z-index:     0;
+}
+
+// ─── Tablet ───────────────────────────────────────────────────────────────────
+@include tablet {
+  .screen {
+    grid-template-columns: 380px 1fr;
+  }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  // ── Layout: apenas coluna do painel — personagem vira fundo ───────────
+  // No mobile não há espaço para dois layouts lado a lado.
+  // O personagem vira background overlay sutil atrás do painel.
+  .screen {
+    grid-template-columns: 1fr;
+    grid-template-rows:    1fr;  // painel ocupa tudo
+    position: relative;
+  }
+
+  // Painel ocupa toda a largura
+  .panel {
+    min-height: 100dvh;
+    border-right: none;
+    position:   relative;
+    z-index:    2;
+  }
+
+  // Personagem: background absoluto, muito translúcido
+  .characterCol {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 60%;
+    min-height: auto;
+    order: 0;
+    z-index: 1;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .characterBg {
+    background: none;
+  }
+
+  .character {
+    height:    100%;
+    max-height:none;
+    object-position: right bottom;
+  }
+
+  .characterEdge { display: none; }
+
+  // ── Painel: padding mobile + espaço para BottomNav ────────────────────
+  .panelHud {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .hudTitle { font-size: var(--text-xl); }
+
+  .panelHeader {
+    padding: var(--sp-4) var(--sp-4) var(--sp-3);
+  }
+
+  .headerTitle { font-size: var(--text-3xl); }
+
+  .channelList {
+    padding: var(--sp-3) var(--sp-3);
+    gap: 2px;
+  }
+
+  .channel {
+    padding: var(--sp-3) var(--sp-3);
+    clip-path: none;  // sem corte diagonal — mais legível em telas pequenas
+  }
+
+  .channelIcon {
+    width:  36px;
+    height: 36px;
+    font-size: var(--text-base);
+  }
+
+  .channelValue {
+    font-size: var(--text-xs);
+  }
+
+  .panelFooter {
+    padding: var(--sp-3) var(--sp-4) calc(var(--sp-4) + 60px);
+  }
+
+  .footerActions {
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+
+  .bgNumber { display: none; }
+}

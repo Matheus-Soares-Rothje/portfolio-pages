@@ -1,0 +1,218 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// LoadingScreen.module.scss
+// Tela de carregamento estilo Persona 5 — aparece no primeiro mount da SPA.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── Overlay ─────────────────────────────────────────────────────────────────
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-transition);
+  background-color: var(--p5-black-pure);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  // Saída: sweep diagonal para a direita
+  &.exiting {
+    animation: sweepExit 0.6s var(--ease-in-expo) forwards;
+  }
+}
+
+// ─── Faixas de fundo animadas ────────────────────────────────────────────────
+.stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 18px,
+    rgba(226, 0, 26, 0.06) 18px,
+    rgba(226, 0, 26, 0.06) 36px
+  );
+  animation: p5-stripe-march 1.2s linear infinite;
+  pointer-events: none;
+}
+
+// ─── Bloco vermelho decorativo (canto superior esquerdo) ─────────────────────
+.accentBlock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: var(--p5-red);
+  box-shadow: var(--glow-md);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 48px;
+    height: 6px;
+    background: var(--p5-red);
+    transform-origin: left center;
+    animation: accentSlide 1s var(--ease-out-expo) 0.3s both;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 22%;
+    left: 0;
+    width: 28px;
+    height: 6px;
+    background: var(--p5-red-dark);
+    transform-origin: left center;
+    animation: accentSlide 1s var(--ease-out-expo) 0.5s both;
+  }
+}
+
+// ─── Conteúdo central ────────────────────────────────────────────────────────
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+// ─── Logo / título ───────────────────────────────────────────────────────────
+.logoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  animation: p5-stamp 0.7s var(--ease-out-expo) 0.1s both;
+}
+
+.logoTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  letter-spacing: 0.12em;
+  color: var(--p5-white);
+  text-transform: uppercase;
+  line-height: 1;
+  // Offset shadow estilo P5
+  text-shadow:
+    5px 5px 0px var(--p5-red-dark),
+    10px 10px 0px rgba(0, 0, 0, 0.6);
+}
+
+.logoSub {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  letter-spacing: 0.35em;
+  color: var(--p5-red);
+  text-transform: uppercase;
+  animation: p5-slide-left 0.5s var(--ease-out-expo) 0.55s both;
+}
+
+// ─── Barra de progresso ───────────────────────────────────────────────────────
+.progressWrap {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  animation: p5-slide-left 0.5s var(--ease-out-expo) 0.4s both;
+}
+
+.progressLabel {
+  font-family: var(--font-heading);
+  font-size: var(--text-xs);
+  letter-spacing: 0.25em;
+  color: var(--p5-gray-light);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+
+  span {
+    color: var(--p5-red);
+    font-weight: 700;
+  }
+}
+
+.progressTrack {
+  width: 100%;
+  height: 3px;
+  background: var(--p5-gray-mid);
+  position: relative;
+  clip-path: var(--clip-tag);
+  overflow: hidden;
+}
+
+.progressBar {
+  position: absolute;
+  inset: 0;
+  background: var(--p5-red);
+  transform-origin: left center;
+  box-shadow: var(--glow-sm);
+  // A animação de largura é controlada via style inline (JS)
+  transition: width 0.12s linear;
+}
+
+// ─── Indicador de ponto piscante ─────────────────────────────────────────────
+.dots {
+  display: flex;
+  gap: var(--sp-2);
+  animation: p5-slide-left 0.5s var(--ease-out-expo) 0.6s both;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--p5-red);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); // losango
+  animation: dotPulse 0.8s ease-in-out infinite;
+
+  &:nth-child(2) { animation-delay: 0.15s; background: var(--p5-white); }
+  &:nth-child(3) { animation-delay: 0.30s; background: var(--p5-red-dark); }
+}
+
+// ─── Cantos decorativos ───────────────────────────────────────────────────────
+.cornerTL,
+.cornerBR {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-color: var(--p5-red);
+  border-style: solid;
+  opacity: 0.5;
+}
+
+.cornerTL {
+  top: var(--sp-6);
+  left: var(--sp-6);
+  border-width: 2px 0 0 2px;
+  animation: fadeIn 0.4s ease 0.8s both;
+}
+
+.cornerBR {
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  border-width: 0 2px 2px 0;
+  animation: fadeIn 0.4s ease 0.85s both;
+}
+
+// ─── Keyframes locais ─────────────────────────────────────────────────────────
+@keyframes sweepExit {
+  0%   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(110% 0, 110% 0, 110% 100%, 110% 100%); }
+}
+
+@keyframes accentSlide {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.7); }
+  50%       { opacity: 1;   transform: scale(1.2); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 0.5; }
+}

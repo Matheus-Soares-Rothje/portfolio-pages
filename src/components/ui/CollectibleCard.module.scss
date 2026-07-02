@@ -1,0 +1,522 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// CollectibleCard.module.scss — carta colecionável 3D
+//
+// Arquitetura de camadas:
+//   .scene   → perspective (não transforma)
+//   .card    → transform-style: preserve-3d; recebe rotateX/Y (tilt) via JS
+//              e rotateY(180deg) (flip) via .card--flipped
+//   .front   → face da frente (backface-visibility: hidden)
+//   .back    → face do verso  (rotateY(180deg) + backface-visibility: hidden)
+//   .holo    → gradiente iridescente sobre a frente (segue o mouse)
+//   .shadow  → sombra dinâmica no chão
+//
+// Diferença do ProjectCard:
+//   - Proporção 2:3 (carta, não card de produto)
+//   - Flip real no clique (não só tilt)
+//   - Verso com design próprio
+//   - Holografia iridescente (não apenas glow vermelho)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Proporção de carta ───────────────────────────────────────────────────────
+$card-ratio: calc(2 / 3);   // largura / altura = 2:3
+
+// ─── Scene ───────────────────────────────────────────────────────────────────
+.scene {
+  perspective:        900px;
+  perspective-origin: 50% 40%;
+  position:           relative;
+  aspect-ratio:       2 / 3;
+  // tap para flip — não bloqueia scroll vertical da página
+  touch-action:       manipulation;
+}
+
+// ─── Card raiz (tilt + flip) ──────────────────────────────────────────────────
+.card {
+  position:        absolute;
+  inset:           0;
+  transform-style: preserve-3d;
+  transform:       rotateX(0deg) rotateY(0deg);
+  transition:      transform 0.7s var(--ease-out-expo);
+  cursor:          pointer;
+  animation:       cardDeal 0.6s var(--ease-out-expo) both;
+  // will-change ativado apenas durante interação
+  &:hover, &:focus-visible { will-change: transform; }
+
+  // Flipped: adiciona rotateY(180deg) ao transform via JS
+  // (feito inline para permitir composição com o tilt)
+}
+
+// ─── Sombra no chão ───────────────────────────────────────────────────────────
+.shadow {
+  position:   absolute;
+  inset:      8% -6px -14px 6px;
+  z-index:    -1;
+  background: rgba(0, 0, 0, 0.7);
+  filter:     blur(14px);
+  transform:  translateZ(-30px);
+  opacity:    0;
+  transition: opacity 0.4s ease, filter 0.4s ease, transform 0.7s var(--ease-out-expo);
+
+  .card:hover + & { opacity: 0.8; filter: blur(20px); }
+}
+
+// ─── Faces (frente e verso) ───────────────────────────────────────────────────
+.front,
+.back {
+  position:             absolute;
+  inset:                0;
+  backface-visibility:  hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius:        0;
+  overflow:             hidden;
+}
+
+// ─── FRENTE ───────────────────────────────────────────────────────────────────
+.front {
+  background: var(--p5-black-pure);
+  border:     2px solid var(--p5-gray-mid);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.9);
+  display:    flex;
+  flex-direction: column;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  .card:hover & {
+    border-color: var(--p5-red);
+    box-shadow:   4px 4px 0 var(--p5-red-dark), var(--glow-sm);
+  }
+}
+
+// Holograma iridescente (segue o mouse via --mx / --my)
+.holo {
+  position:       absolute;
+  inset:          0;
+  z-index:        10;
+  pointer-events: none;
+  opacity:        0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255,255,255,0.15)  0%,
+      transparent             50%
+    ),
+    linear-gradient(
+      calc(var(--angle, 135deg)),
+      rgba(255, 0,   120, 0.12) 0%,
+      rgba(255, 200,  0,  0.10) 20%,
+      rgba(0,   255, 120, 0.10) 40%,
+      rgba(0,   120, 255, 0.10) 60%,
+      rgba(180,  0,  255, 0.12) 80%,
+      rgba(255,  0,  120, 0.10) 100%
+    );
+  transition: opacity 0.3s ease;
+
+  .card:hover & { opacity: 1; }
+}
+
+// Triângulo vermelho canto sup-dir
+.cornerTR {
+  position:   absolute;
+  top:        -1px; right: -1px;
+  width:      22px; height: 22px;
+  background: var(--p5-red);
+  clip-path:  polygon(0 0, 100% 100%, 100% 0);
+  z-index:    11;
+  transition: background 0.25s, width 0.25s, height 0.25s;
+
+  .card:hover & { background: var(--p5-white); width: 26px; height: 26px; }
+}
+
+// ─── Faixa de cabeçalho (tipo de carta) ──────────────────────────────────────
+.cardHeader {
+  position:        relative;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         var(--sp-2) var(--sp-3);
+  background:      var(--p5-red);
+  flex-shrink:     0;
+
+  // Corte diagonal direita
+  clip-path: var(--clip-banner);
+}
+
+.cardType {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color:          rgba(255,255,255,0.9);
+}
+
+.cardRarity {
+  font-family:    var(--font-display);
+  font-size:      10px;
+  color:          var(--p5-white);
+  letter-spacing: 0.1em;
+  // Estrelas de raridade
+  &[data-rarity="1"]::after { content: '★'; }
+  &[data-rarity="2"]::after { content: '★★'; }
+  &[data-rarity="3"]::after { content: '★★★'; }
+}
+
+// ─── Área do ícone ────────────────────────────────────────────────────────────
+.iconArea {
+  position:        relative;
+  flex:            1;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--sp-2);
+  padding:         var(--sp-4) var(--sp-3);
+  background:      linear-gradient(
+    180deg,
+    rgba(226,0,26,0.05) 0%,
+    transparent          50%,
+    rgba(0,0,0,0.3)     100%
+  );
+}
+
+// Hexágono de fundo do ícone
+.iconHex {
+  position:        relative;
+  width:           72px;
+  height:          72px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+
+  &::before {
+    content:    '';
+    position:   absolute;
+    inset:      0;
+    background: rgba(226, 0, 26, 0.12);
+    clip-path:  polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    transition: background 0.3s;
+  }
+
+  &::after {
+    content:    '';
+    position:   absolute;
+    inset:      -4px;
+    border:     1px solid rgba(226,0,26,0.3);
+    clip-path:  polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    transition: border-color 0.3s;
+  }
+
+  .card:hover &::before { background: rgba(226,0,26,0.22); }
+  .card:hover &::after  { border-color: rgba(226,0,26,0.6); }
+}
+
+.iconGlow {
+  position:   absolute;
+  inset:      -10px;
+  background: radial-gradient(circle, rgba(226,0,26,0.3), transparent 65%);
+  opacity:    0;
+  transition: opacity 0.3s;
+
+  .card:hover & { opacity: 1; }
+}
+
+// Ano em display font
+.iconYear {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xs);
+  letter-spacing: 0.3em;
+  color:          var(--p5-red);
+  opacity:        0.7;
+}
+
+// ─── Divisor holográfico ──────────────────────────────────────────────────────
+.holoDivider {
+  height:     2px;
+  margin:     0 var(--sp-4);
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--p5-red) 20%,
+    var(--p5-white) 50%,
+    var(--p5-red) 80%,
+    transparent
+  );
+  flex-shrink: 0;
+  opacity:     0.4;
+  transition:  opacity 0.3s;
+
+  .card:hover & { opacity: 0.8; }
+}
+
+// ─── Info da carta ────────────────────────────────────────────────────────────
+.cardInfo {
+  padding:        var(--sp-3) var(--sp-4) var(--sp-2);
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--sp-1);
+  flex-shrink:    0;
+}
+
+.cardName {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--p5-white);
+  line-height:    1.2;
+}
+
+.cardPlatform {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  display:        flex;
+  align-items:    center;
+  gap:            4px;
+
+  &::before { content: '◆'; font-size: 6px; opacity: 0.6; }
+}
+
+// ─── Rodapé da carta ─────────────────────────────────────────────────────────
+.cardFooter {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         var(--sp-2) var(--sp-4);
+  border-top:      1px solid var(--p5-gray-mid);
+  flex-shrink:     0;
+  transition:      border-color 0.3s;
+
+  .card:hover & { border-color: rgba(226,0,26,0.35); }
+}
+
+.unlockedBadge {
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            4px;
+
+  &::before { content: '✓'; color: var(--p5-red); font-size: 10px; }
+}
+
+.flipHint {
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  opacity:        0;
+  transition:     opacity 0.2s;
+  display:        flex;
+  align-items:    center;
+  gap:            3px;
+
+  &::before { content: '↺'; font-size: 10px; color: var(--p5-red); }
+
+  .card:hover & { opacity: 1; }
+}
+
+// ─── VERSO ────────────────────────────────────────────────────────────────────
+.back {
+  transform:  rotateY(180deg);
+  background: var(--p5-black-pure);
+  border:     2px solid var(--p5-red);
+  box-shadow: -3px 3px 0 var(--p5-red-dark);
+  display:    flex;
+  flex-direction: column;
+  align-items:    center;
+  justify-content:center;
+  gap:        var(--sp-4);
+  padding:    var(--sp-6);
+}
+
+// Padrão de fundo do verso
+.backPattern {
+  position:       absolute;
+  inset:          0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      -52deg,
+      transparent, transparent 8px,
+      rgba(226,0,26,0.04) 8px, rgba(226,0,26,0.04) 16px
+    ),
+    repeating-linear-gradient(
+      52deg,
+      transparent, transparent 8px,
+      rgba(226,0,26,0.04) 8px, rgba(226,0,26,0.04) 16px
+    );
+}
+
+.backLogo {
+  position:   relative;
+  z-index:    1;
+  display:    flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:        var(--sp-2);
+}
+
+.backLogoMark {
+  font-family:    var(--font-display);
+  font-size:      3.5rem;
+  color:          var(--p5-red);
+  line-height:    1;
+  text-shadow:    4px 4px 0 var(--p5-red-deeper);
+  letter-spacing: 0.06em;
+  // Losango grande como marca d'água
+  clip-path:      var(--clip-slash);
+  padding:        var(--sp-2) var(--sp-6);
+  background:     rgba(226,0,26,0.08);
+}
+
+.backLogoSub {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+}
+
+// Certificado info no verso
+.backCertInfo {
+  position:   relative;
+  z-index:    1;
+  display:    flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:        var(--sp-2);
+  text-align: center;
+  padding:    var(--sp-3) var(--sp-4);
+  border:     1px solid var(--p5-gray-mid);
+  border-left:3px solid var(--p5-red);
+  background: rgba(0,0,0,0.4);
+  width:      100%;
+}
+
+.backCertName {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--p5-white);
+  line-height:    1.2;
+}
+
+.backCertMeta {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+}
+
+// Link no verso
+.backLink {
+  position:       relative;
+  z-index:        1;
+  font-family:    var(--font-heading);
+  font-size:      var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration:none;
+  padding:        0.5em 1.4em 0.5em 1em;
+  background:     var(--p5-red);
+  color:          var(--p5-white);
+  clip-path:      var(--clip-banner);
+  box-shadow:     3px 3px 0 var(--p5-red-dark);
+  transition:     box-shadow 0.2s;
+
+  &:hover { box-shadow: var(--glow-md), 3px 3px 0 var(--p5-red-dark); }
+}
+
+// Hint de voltar
+.backHint {
+  position:       relative;
+  z-index:        1;
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            4px;
+
+  &::before { content: '↺'; font-size: 10px; color: var(--p5-red); }
+}
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+@keyframes cardDeal {
+  from {
+    opacity:   0;
+    transform: translateY(-30px) rotateX(20deg) rotateY(-15deg) scale(0.85);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0)     rotateX(0deg)  rotateY(0deg)   scale(1);
+  }
+}
+
+// ─── Reduzir movimento ────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .card      { transition: none; animation: none; }
+  .holo      { display: none; }
+  .shadow    { display: none; }
+}
+
+// ─── Mobile: tap para flip (sem hover) ───────────────────────────────────────
+@media (max-width: 639px) {
+  .scene {
+    // Cartas menores no scroll horizontal — já definido no grid da página
+    aspect-ratio: 2 / 3;
+  }
+
+  // Sem hover 3D no touch — só flip no tap
+  .holo { display: none; }
+
+  // Feedback visual de tap
+  .card:active .front {
+    filter: brightness(1.15);
+  }
+
+  // Frente: toque mais legível
+  .cardHeader {
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  .iconHex {
+    width:  56px;
+    height: 56px;
+  }
+
+  .cardInfo {
+    padding: var(--sp-2) var(--sp-3) var(--sp-1);
+  }
+
+  .cardName {
+    font-size: var(--text-xs);
+  }
+
+  .cardFooter {
+    padding: var(--sp-1) var(--sp-3) var(--sp-2);
+  }
+
+  // Verso: texto menor
+  .backLogoMark {
+    font-size: 2.5rem;
+    padding:   var(--sp-1) var(--sp-4);
+  }
+
+  .backCertName { font-size: var(--text-xs); }
+}

@@ -1,0 +1,570 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// SobreMimDetalhes.module.scss
+// Layout de ficha de personagem estilo RPG/P5 — rota /sobre-mim
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Tela raiz ────────────────────────────────────────────────────────────────
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: grid;
+  // personagem à esquerda, ficha à direita
+  grid-template-columns: 420px 1fr;
+  grid-template-rows: 1fr;
+  background: var(--p5-black-pure);
+  overflow: hidden;
+}
+
+// ─── Fundo global ─────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  // sweep diagonal vermelho
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 70%;
+    height: 100%;
+    background: var(--p5-red);
+    clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 0.04;
+  }
+
+  // scanlines
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 3px,
+      rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+    );
+  }
+}
+
+.stripes {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -52deg,
+    transparent, transparent 26px,
+    rgba(226,0,26,0.015) 26px, rgba(226,0,26,0.015) 52px
+  );
+  animation: p5-stripe-march 5s linear infinite;
+}
+
+// ─── Coluna esquerda — personagem ─────────────────────────────────────────────
+.characterCol {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+// fundo diagonal vermelho atrás do personagem
+.characterBg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg,
+      rgba(226,0,26,0.18) 0%,
+      rgba(10,0,0,0.95)   60%
+    );
+  clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%);
+}
+
+// linha de corte diagonal direita
+.characterBgEdge {
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--p5-red), transparent 70%);
+  box-shadow: var(--glow-sm);
+  z-index: 3;
+}
+
+.character {
+  position: relative;
+  z-index: 2;
+  height: 88vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter:
+    drop-shadow(-4px 0 24px rgba(226,0,26,0.25))
+    drop-shadow(0 20px 40px rgba(0,0,0,0.9));
+  animation: p5-float 5s ease-in-out infinite;
+  user-select: none;
+  pointer-events: none;
+}
+
+.characterGlow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 60px;
+  background: radial-gradient(ellipse at center,
+    rgba(226,0,26,0.25), transparent 70%
+  );
+  z-index: 1;
+  animation: p5-pulse-glow 3s ease-in-out infinite;
+}
+
+// ID badge no topo da coluna do personagem
+.characterId {
+  position: absolute;
+  top: var(--sp-6);
+  left: var(--sp-5);
+  z-index: 4;
+  animation: p5-slide-left 0.4s var(--ease-out-expo) 0.05s both;
+}
+
+.characterIdLabel {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 2px;
+    background: var(--p5-red);
+  }
+}
+
+.characterIdName {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--p5-white);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 var(--p5-red-dark);
+  line-height: 1;
+  margin-top: var(--sp-1);
+}
+
+// ─── Coluna direita — ficha ───────────────────────────────────────────────────
+.sheet {
+  position: relative;
+  z-index: 3;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--p5-red) transparent;
+  padding: var(--sp-10) var(--sp-10) var(--sp-16) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+// ─── Cabeçalho da ficha ───────────────────────────────────────────────────────
+.sheetHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.1s both;
+}
+
+.sheetEyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+
+  &::before {
+    content: '//';
+    color: var(--p5-gray-light);
+  }
+}
+
+.sheetTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 5.5vw, var(--text-5xl));
+  color: var(--p5-white);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 0.9;
+  text-shadow: 4px 4px 0 var(--p5-red-dark);
+}
+
+.sheetDivider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-1);
+
+  &::before {
+    content: '';
+    display: block;
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--p5-red), transparent);
+  }
+
+  span {
+    font-family: var(--font-heading);
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--p5-gray-light);
+    text-transform: uppercase;
+  }
+}
+
+// ─── Bloco de bio ─────────────────────────────────────────────────────────────
+.bioBlock {
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.18s both;
+}
+
+.blockLabel {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  margin-bottom:  var(--sp-3);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-3);
+
+  // Número de índice — em display font, vermelho
+  span {
+    font-family:    var(--font-display);
+    font-size:      var(--text-sm);
+    color:          var(--p5-red);
+    letter-spacing: 0.04em;
+    line-height:    1;
+    flex-shrink:    0;
+  }
+
+  &::after {
+    content:    '';
+    flex:       1;
+    height:     1px;
+    background: linear-gradient(to right, var(--p5-gray-mid), transparent);
+  }
+}
+
+.bioText {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 500;
+  line-height: 1.75;
+  color: var(--p5-white-dim);
+  border-left: 3px solid var(--p5-red);
+  padding-left: var(--sp-4);
+  background: rgba(226,0,26,0.03);
+  padding-top: var(--sp-3);
+  padding-bottom: var(--sp-3);
+}
+
+// ─── Skills — barras de XP estilo RPG ────────────────────────────────────────
+.skillsBlock {
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.26s both;
+}
+
+.skillList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.skill {
+  display: grid;
+  grid-template-columns: 140px 1fr 48px;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.skillName {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p5-white-dim);
+}
+
+.skillTrack {
+  height: 6px;
+  background: var(--p5-gray-dark);
+  position: relative;
+  clip-path: var(--clip-tag);
+  overflow: hidden;
+}
+
+.skillFill {
+  position: absolute;
+  inset: 0;
+  background: var(--p5-red);
+  transform-origin: left;
+  box-shadow: var(--glow-sm);
+  // largura via style inline
+}
+
+.skillLevel {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--p5-red);
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+
+// ─── Traços / atributos (grid de cards compactos) ────────────────────────────
+.traitsBlock {
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.34s both;
+}
+
+.traitGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+}
+
+.traitCard {
+  background: var(--p5-black-panel);
+  border: 1px solid var(--p5-gray-mid);
+  border-top: 2px solid var(--p5-red);
+  clip-path: var(--clip-corner-tr);
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  transition: border-color var(--duration-base), box-shadow var(--duration-base);
+
+  &:hover {
+    border-color: var(--p5-red);
+    box-shadow: var(--glow-sm);
+  }
+}
+
+.traitValue {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--p5-white);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.traitLabel {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+}
+
+// ─── Timeline de jornada ─────────────────────────────────────────────────────
+.timelineBlock {
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.42s both;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: var(--sp-8);
+
+  // linha vertical
+  &::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--p5-red), transparent);
+  }
+}
+
+.timelineItem {
+  position: relative;
+  padding-bottom: var(--sp-6);
+
+  // marcador losango
+  &::before {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--sp-8) + 3px);
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: var(--p5-red);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    box-shadow: var(--glow-sm);
+    transition: transform var(--duration-base);
+  }
+
+  &:hover::before {
+    transform: scale(1.4);
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+    &::before { background: var(--p5-gray-mid); box-shadow: none; }
+  }
+}
+
+.timelinePeriod {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+  margin-bottom: var(--sp-1);
+}
+
+.timelineRole {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--p5-white);
+}
+
+.timelinePlace {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--p5-white-dim);
+  margin-top: 2px;
+}
+
+// ─── Rodapé da ficha — CTA ───────────────────────────────────────────────────
+.sheetFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--p5-gray-mid);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.5s both;
+}
+
+.footerHint {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
+  &::before {
+    content: '▶';
+    font-size: 8px;
+    color: var(--p5-red);
+  }
+}
+
+// ─── Tablet ───────────────────────────────────────────────────────────────────
+@include tablet {
+  .screen {
+    grid-template-columns: 320px 1fr;
+  }
+
+  .traitGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .skill {
+    grid-template-columns: 110px 1fr 40px;
+  }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  // ── Layout: avatar compacto no topo (não 52vh) + sheet embaixo ────────
+  .screen {
+    grid-template-columns: 1fr;
+    grid-template-rows:    auto auto;
+    min-height:            100vh;
+  }
+
+  // Coluna do personagem vira uma faixa horizontal compacta
+  .characterCol {
+    position:   relative;
+    height:     220px;    // fixo — não desperdiça metade da tela
+    overflow:   hidden;
+  }
+
+  // Badge de ID reposicionado
+  .characterId {
+    top:  var(--sp-4);
+    left: var(--sp-4);
+  }
+
+  .characterIdName {
+    font-size: var(--text-xl);
+  }
+
+  // Personagem corta da cintura para cima — mais impactante
+  .character {
+    height:          160%;
+    object-position: center 15%;
+    opacity:         0.85;
+  }
+
+  // Gradiente cobre a parte inferior do personagem
+  .characterBg {
+    background: linear-gradient(
+      to bottom,
+      rgba(226, 0, 26, 0.12) 0%,
+      rgba(0, 0, 0, 0.98)    100%
+    );
+    clip-path: none;
+  }
+
+  // ── Ficha: padding ajustado, espaço para BottomNav ────────────────────
+  .sheet {
+    padding:    var(--sp-5) var(--sp-4) calc(var(--sp-8) + 60px);
+    gap:        var(--sp-5);
+    overflow-y: visible;  // scroll da página, não do painel
+  }
+
+  .sheetTitle {
+    font-size: var(--text-3xl);
+    line-height: 0.88;
+  }
+
+  .traitGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .skill {
+    grid-template-columns: 80px 1fr 32px;
+    gap:  var(--sp-2);
+  }
+
+  .sheetFooter {
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+}

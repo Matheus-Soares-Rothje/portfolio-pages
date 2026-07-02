@@ -1,0 +1,64 @@
+// ── Animação de stamp (letra cai de cima) ─────────────────────────────────────
+@keyframes letterStamp {
+  0% {
+    opacity:    0;
+    transform:  translateY(-32px) scale(1.25);
+    filter:     blur(2px);
+  }
+  65% {
+    opacity:    1;
+    transform:  translateY(3px) scale(0.97);
+    filter:     blur(0);
+  }
+  85% {
+    transform:  translateY(-1px) scale(1.01);
+  }
+  100% {
+    opacity:    1;
+    transform:  translateY(0) scale(1);
+  }
+}
+
+// ── Animação da linha decorativa ─────────────────────────────────────────────
+@keyframes accentSlide {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+// ── Root ─────────────────────────────────────────────────────────────────────
+.root {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             0;
+  font-family:     var(--font-display);
+  font-size:       clamp(2.8rem, 6vw, 5rem);
+  font-weight:     700;
+  font-style:      italic;
+  text-transform:  uppercase;
+  letter-spacing:  0.02em;
+  line-height:     1;
+  color:           white;
+  position:        relative;
+}
+
+// ── Linha diagonal decorativa ────────────────────────────────────────────────
+.accent {
+  display:          block;
+  width:            5px;
+  height:           1em;
+  border-radius:    1px;
+  margin-right:     0.18em;
+  transform-origin: top center;
+  animation:        accentSlide 0.2s ease-out both;
+  flex-shrink:      0;
+}
+
+// ── Cada letra individual ────────────────────────────────────────────────────
+.letter {
+  display:     inline-block;
+  opacity:     0;
+  animation:   letterStamp 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  font-family: inherit;
+  margin:      0;
+  padding:     0;
+}

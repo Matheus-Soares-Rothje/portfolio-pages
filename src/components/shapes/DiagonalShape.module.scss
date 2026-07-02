@@ -1,0 +1,19 @@
+.shape {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3em 1.4em 0.3em 1em;
+}
+
+// Variants
+.banner-left  { clip-path: var(--clip-banner); }
+.banner-right { clip-path: var(--clip-banner-r); }
+.slash        { clip-path: var(--clip-slash); padding: 0.3em 1.6em; }
+.tag          { clip-path: var(--clip-tag); padding: 0.2em 1.2em 0.2em 0.8em; }
+.corner-cut   { clip-path: var(--clip-corner-tl); }
+
+// Colors
+.color-red   { background-color: var(--p5-red); color: var(--p5-white); }
+.color-black { background-color: var(--p5-black); color: var(--p5-white); }
+.color-white { background-color: var(--p5-white); color: var(--p5-black); }
+.color-dark  { background-color: var(--p5-gray-dark); color: var(--p5-white); }

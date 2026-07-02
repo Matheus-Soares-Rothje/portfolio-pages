@@ -1,0 +1,38 @@
+// ─── Persona 5 Color Palette ────────────────────────────────────────────────
+$color-black:       #0a0a0a;
+$color-red:         #e2001a;
+$color-red-dark:    #9b0012;
+$color-white:       #ffffff;
+$color-white-off:   #f0ece3;
+$color-gray-dark:   #1a1a1a;
+$color-gray-mid:    #2d2d2d;
+
+// ─── CSS Custom Properties (accessible in Tailwind / JS via var()) ──────────
+:root {
+  --p5-black:       #{$color-black};
+  --p5-red:         #{$color-red};
+  --p5-red-dark:    #{$color-red-dark};
+  --p5-white:       #{$color-white};
+  --p5-white-off:   #{$color-white-off};
+  --p5-gray-dark:   #{$color-gray-dark};
+  --p5-gray-mid:    #{$color-gray-mid};
+
+  // Spacing scale
+  --space-xs:       0.25rem;
+  --space-sm:       0.5rem;
+  --space-md:       1rem;
+  --space-lg:       2rem;
+  --space-xl:       4rem;
+
+  // Border
+  --border-thick:   3px;
+  --border-hero:    5px;
+
+  // Z-index layers
+  --z-background:   0;
+  --z-content:      10;
+  --z-character:    20;
+  --z-nav:          100;
+  --z-overlay:      200;
+  --z-transition:   999;
+}

@@ -1,0 +1,128 @@
+// ─── Section Wrapper ─────────────────────────────────────────────────────────
+.section {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: var(--sp-8);
+}
+
+// ─── Decorative Sweep ─────────────────────────────────────────────────────────
+// Large angular red shapes in the background — core P5 visual language
+.section__sweep {
+  position: absolute;
+  bottom: -10%;
+  right: -5%;
+  width: 60%;
+  height: 80%;
+  background-color: var(--p5-red);
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: var(--z-bg);
+}
+
+.section__sweep_accent {
+  position: absolute;
+  bottom: -5%;
+  right: 5%;
+  width: 40%;
+  height: 55%;
+  background-color: var(--p5-white);
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+  opacity: 0.02;
+  pointer-events: none;
+  z-index: var(--z-bg);
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.section__body {
+  position: relative;
+  z-index: var(--z-content);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-8) var(--sp-6);
+
+  &--contained {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+
+    @media (max-width: 768px) {
+      padding: var(--sp-6) var(--sp-4);
+    }
+  }
+}
+
+// ─── Section Title ────────────────────────────────────────────────────────────
+.title {
+  position: relative;
+  margin-bottom: var(--sp-10);
+}
+
+.title__accent {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+  margin-bottom: var(--sp-1);
+}
+
+.title__text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--p5-white);
+  letter-spacing: 0.04em;
+  line-height: 0.95;
+  // Thick black stroke (P5 style)
+  -webkit-text-stroke: 2px rgba(0, 0, 0, 0.8);
+  paint-order: stroke fill;
+  position: relative;
+
+  // Red drop-shadow offset
+  &::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    color: var(--p5-red);
+    z-index: -1;
+    transform: translate(4px, 4px);
+    pointer-events: none;
+  }
+}
+
+// Size variants
+.title--sm  .title__text { font-size: var(--text-2xl); }
+.title--md  .title__text { font-size: var(--text-3xl); }
+.title--lg  .title__text { font-size: var(--text-4xl); }
+.title--xl  .title__text { font-size: var(--text-hero); }
+
+@media (max-width: 768px) {
+  .title--lg  .title__text { font-size: var(--text-3xl); }
+  .title--xl  .title__text { font-size: var(--text-4xl); }
+}
+
+// Red underline
+.title__line {
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: var(--p5-red);
+  margin-top: var(--sp-3);
+  clip-path: var(--clip-banner);
+  box-shadow: var(--glow-sm);
+}
+
+// Alignment
+.title--left   { text-align: left; }
+.title--center {
+  text-align: center;
+  .title__line { margin-left: auto; margin-right: auto; }
+}

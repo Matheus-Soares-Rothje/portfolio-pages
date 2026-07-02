@@ -1,0 +1,492 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Certificados.module.scss
+// Tela de conquistas desbloqueadas — diferente das outras seções.
+// Personagem ao FUNDO (não coluna fixa), grid de cards de troféu sobre ele.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Tela raiz ────────────────────────────────────────────────────────────────
+.screen {
+  position:   relative;
+  min-height: 100dvh;
+  width:      100%;
+  background: var(--p5-black-pure);
+  overflow:   hidden;
+  display:    flex;
+  flex-direction: column;
+}
+
+// ─── Fundo ────────────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -52deg,
+      transparent, transparent 28px,
+      rgba(226, 0, 26, 0.018) 28px, rgba(226, 0, 26, 0.018) 56px
+    );
+    animation: p5-stripe-march 5s linear infinite;
+  }
+
+  // Vinheta pesada — o personagem fica ao fundo e não compete com os cards
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 80% at 75% 60%,
+      transparent 20%,
+      rgba(0, 0, 0, 0.7) 65%,
+      rgba(0, 0, 0, 0.92) 100%
+    );
+  }
+}
+
+// ─── Personagem ao fundo (não sticky — faz parte do layout) ──────────────────
+.characterBg {
+  position:   absolute;
+  right:      0;
+  bottom:     0;
+  top:        0;
+  width:      55%;
+  z-index:    1;
+  pointer-events: none;
+  display:    flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow:   hidden;
+}
+
+// Gradiente vermelho atrás do personagem
+.characterHalo {
+  position:   absolute;
+  inset:      0;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(226, 0, 26, 0.1) 70%,
+    rgba(226, 0, 26, 0.18) 100%
+  );
+}
+
+.character {
+  height:     92vh;
+  width:      auto;
+  max-width:  100%;
+  object-fit: contain;
+  object-position: bottom right;
+  filter:
+    drop-shadow(-12px 0 40px rgba(226, 0, 26, 0.15))
+    drop-shadow(0 0 80px rgba(0, 0, 0, 0.9));
+  animation:  p5-float 5s ease-in-out infinite;
+  user-select:  none;
+  pointer-events: none;
+  // Leve dessaturação — não compete com os cards
+  opacity:    0.65;
+}
+
+// ─── Conteúdo (sobre o personagem) ───────────────────────────────────────────
+.content {
+  position:   relative;
+  z-index:    3;
+  flex:       1;
+  padding:    var(--sp-10) var(--sp-10) var(--sp-20);
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--sp-8);
+  max-width:  800px; // conteúdo concentrado na esquerda
+}
+
+// ─── Cabeçalho ────────────────────────────────────────────────────────────────
+.header {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--sp-2);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.05s both;
+}
+
+.eyebrow {
+  display:     flex;
+  align-items: center;
+  gap:         var(--sp-3);
+  font-family: var(--font-heading);
+  font-size:   10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color:       var(--p5-red);
+
+  &::before {
+    content: '//';
+    color:   var(--p5-gray-light);
+    letter-spacing: 0;
+  }
+}
+
+.title {
+  font-family:    var(--font-display);
+  font-size:      clamp(2.75rem, 5.5vw, var(--text-5xl));
+  color:          var(--p5-white);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height:    0.9;
+  text-shadow:    4px 4px 0 var(--p5-red-dark);
+}
+
+.divider {
+  display:     flex;
+  align-items: center;
+  gap:         var(--sp-3);
+  margin-top:  var(--sp-1);
+
+  &::before {
+    content:    '';
+    flex:       1;
+    height:     2px;
+    background: linear-gradient(to right, var(--p5-red), transparent);
+  }
+
+  span {
+    font-family:    var(--font-heading);
+    font-size:      9px;
+    letter-spacing: 0.35em;
+    color:          var(--p5-gray-light);
+    text-transform: uppercase;
+  }
+}
+
+// ─── Grid de cartas ───────────────────────────────────────────────────────────
+// minmax menor que antes — cartas são estreitas (proporção 2:3)
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+// ─── Card de conquista (troféu) ───────────────────────────────────────────────
+.card {
+  position:   relative;
+  background: rgba(10, 0, 0, 0.82);
+  border:     2px solid var(--p5-gray-mid);
+  // Corte duplo: canto sup-dir + canto inf-esq
+  clip-path: polygon(
+    0 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+  padding:    var(--sp-4) var(--sp-5);
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--sp-3);
+  cursor:     default;
+  // Borda offset shadow
+  box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+  transition:
+    border-color var(--duration-base) var(--ease-out-expo),
+    box-shadow   var(--duration-base) var(--ease-out-expo),
+    transform    var(--duration-base) var(--ease-out-expo),
+    background   var(--duration-base) var(--ease-out-expo);
+
+  &:hover {
+    border-color: var(--p5-red);
+    box-shadow:   4px 4px 0 0 var(--p5-red-dark), var(--glow-sm);
+    transform:    translateY(-3px);
+    background:   rgba(20, 0, 0, 0.9);
+  }
+
+  // Estado bloqueado (sem url e sem link)
+  &--locked {
+    opacity: 0.45;
+    filter:  grayscale(80%);
+    cursor:  not-allowed;
+
+    &:hover {
+      transform: none;
+      border-color: var(--p5-gray-mid);
+      box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+    }
+  }
+}
+
+// Triângulo vermelho sup-dir
+.cardCorner {
+  position:   absolute;
+  top:        -1px;
+  right:      -1px;
+  width:      20px;
+  height:     20px;
+  background: var(--p5-red);
+  clip-path:  polygon(0 0, 100% 100%, 100% 0);
+  z-index:    2;
+  transition: background 0.25s;
+
+  .card:hover & { background: var(--p5-white); }
+}
+
+// ─── Topo do card: ícone + ano ────────────────────────────────────────────────
+.cardTop {
+  display:     flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap:         var(--sp-2);
+}
+
+// Wrapper do ícone com glow
+.iconWrap {
+  position:    relative;
+  width:       44px;
+  height:      44px;
+  display:     flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  // Fundo hexagonal
+  &::before {
+    content:    '';
+    position:   absolute;
+    inset:      0;
+    background: rgba(226, 0, 26, 0.08);
+    clip-path:  polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    transition: background 0.25s;
+  }
+
+  .card:hover &::before {
+    background: rgba(226, 0, 26, 0.18);
+  }
+}
+
+.iconGlow {
+  position:       absolute;
+  inset:          -4px;
+  border-radius:  50%;
+  opacity:        0;
+  background:     radial-gradient(circle, rgba(226, 0, 26, 0.3), transparent 70%);
+  transition:     opacity 0.3s;
+
+  .card:hover & { opacity: 1; }
+}
+
+// Ano
+.cardYear {
+  font-family:    var(--font-display);
+  font-size:      var(--text-2xl);
+  color:          var(--p5-red);
+  line-height:    1;
+  letter-spacing: 0.04em;
+  opacity:        0.5;
+  transition:     opacity 0.25s;
+
+  .card:hover & { opacity: 1; }
+}
+
+// ─── Corpo: nome + plataforma ────────────────────────────────────────────────
+.cardBody {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--sp-1);
+  flex:           1;
+}
+
+.cardName {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-base);
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--p5-white);
+  line-height:    1.2;
+  transition:     color 0.25s;
+}
+
+.cardPlatform {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-1);
+
+  &::before {
+    content:  '◆';
+    font-size:6px;
+    opacity:  0.7;
+  }
+}
+
+// ─── Rodapé: badge "desbloqueado" / link ─────────────────────────────────────
+.cardFooter {
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--sp-2);
+  border-top:  1px solid var(--p5-gray-mid);
+  transition:  border-color 0.25s;
+
+  .card:hover & { border-color: rgba(226, 0, 26, 0.3); }
+}
+
+.unlockedBadge {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-1);
+
+  &::before {
+    content:  '✓';
+    color:    var(--p5-red);
+    font-size:10px;
+  }
+}
+
+.cardLink {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration:none;
+  padding:        0.3em 0.8em;
+  border:         1px solid var(--p5-gray-mid);
+  color:          var(--p5-gray-light);
+  clip-path:      var(--clip-tag);
+  opacity:        0;
+  transition:
+    opacity      0.2s,
+    background   0.2s,
+    border-color 0.2s,
+    color        0.2s;
+
+  .card:hover & {
+    opacity: 1;
+  }
+
+  &:hover {
+    background:   var(--p5-red);
+    border-color: var(--p5-red);
+    color:        var(--p5-white);
+  }
+}
+
+// ─── Rodapé da página ────────────────────────────────────────────────────────
+.footer {
+  display:     flex;
+  align-items: center;
+  gap:         var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top:  1px solid var(--p5-gray-mid);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.5s both;
+}
+
+.footerHint {
+  font-family:    var(--font-heading);
+  font-size:      10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  margin-left:    auto;
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::before {
+    content:   '▶';
+    font-size: 8px;
+    color:     var(--p5-red);
+  }
+}
+
+// ─── Tablet ───────────────────────────────────────────────────────────────────
+@include tablet {
+  .content {
+    padding:  var(--sp-8) var(--sp-6) var(--sp-16);
+    max-width:none;
+  }
+
+  .characterBg {
+    width: 50%;
+    opacity: 0.5;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  // ── Conteúdo: sem max-width, padding lateral reduzido ─────────────────
+  .content {
+    padding:  var(--sp-5) 0 calc(var(--sp-6) + 60px);
+    max-width:none;
+    gap:      var(--sp-5);
+  }
+
+  .header,
+  .footer {
+    padding-left:  var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+
+  // Personagem mais translúcido — não compete com as cartas
+  .characterBg {
+    width:   70%;
+    opacity: 0.15;
+    right:   -5%;
+  }
+
+  .title { font-size: var(--text-3xl); }
+
+  // ── Grid de cartas: scroll horizontal com snap ─────────────────────────
+  // Cartas colecionáveis ficam melhores em scroll horizontal no mobile —
+  // imita abrir um álbum de cartas e folhear lateralmente.
+  .grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fill, 150px);
+    grid-auto-flow:        column;
+    grid-auto-columns:     150px;
+    gap:                   var(--sp-4);
+    overflow-x:            auto;
+    scroll-snap-type:      x mandatory;
+    scrollbar-width:       none;
+    padding:               var(--sp-2) var(--sp-4) var(--sp-4);
+    align-items:           start;
+    -webkit-mask-image:    linear-gradient(
+      to right,
+      transparent 0%, black 6%, black 88%, transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%, black 6%, black 88%, transparent 100%
+    );
+
+    &::-webkit-scrollbar { display: none; }
+
+    & > li {
+      scroll-snap-align: center;
+      width: 150px;
+    }
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items:    flex-start;
+    gap: var(--sp-3);
+  }
+}

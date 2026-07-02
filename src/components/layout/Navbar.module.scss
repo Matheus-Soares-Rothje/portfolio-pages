@@ -1,0 +1,131 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Navbar.module.scss — barra lateral de navegação estilo Persona 5
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Aside (coluna esquerda fixa) ────────────────────────────────────────────
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 220px;
+  z-index: var(--z-nav);
+  display: flex;
+  flex-direction: column;
+
+  // Fundo semitransparente escuro com leve textura
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.97) 0%,
+    rgba(10, 0, 0, 0.95) 100%
+  );
+  border-right: 1px solid var(--p5-gray-mid);
+
+  // Destaque diagonal no canto superior direito
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      var(--p5-red) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  // Faixas diagonais decorativas no fundo
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    @include diagonal-stripes(rgba(226, 0, 26, 0.03), 24px);
+    pointer-events: none;
+  }
+}
+
+// ─── Logo no topo ─────────────────────────────────────────────────────────────
+.logoArea {
+  flex-shrink: 0;
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--p5-gray-mid);
+  position: relative;
+}
+
+// ─── Lista de itens ───────────────────────────────────────────────────────────
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-4) 0;
+  flex: 1;
+}
+
+.listItem {
+  // sem estilo — o NavItem cuida de tudo
+}
+
+// ─── Rodapé da nav ────────────────────────────────────────────────────────────
+.footer {
+  flex-shrink: 0;
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--p5-gray-mid);
+}
+
+// ─── Rodapé da nav — assinatura minimalista ──────────────────────────────────
+.footer {
+  flex-shrink: 0;
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+// Stack de tecnologias em tiny text
+.footerStack {
+  display:    flex;
+  flex-wrap:  wrap;
+  gap:        var(--sp-1);
+}
+
+.footerTag {
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  padding:        2px 6px;
+  border:         1px solid var(--p5-gray-mid);
+  clip-path:      var(--clip-tag);
+  transition:     border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: var(--p5-red);
+    color:        var(--p5-white);
+  }
+}
+
+// Ano e linha de copyright — mínimo, confiante
+.footerCopy {
+  font-family:    var(--font-heading);
+  font-size:      8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color:          rgba(255,255,255,0.18);
+  margin-top:     var(--sp-1);
+}
+
+// ─── Mobile: nav horizontal no topo ──────────────────────────────────────────
+@include mobile {
+  // A BottomNav cuida do mobile — a sidebar lateral fica oculta
+  .nav {
+    display: none;
+  }
+}

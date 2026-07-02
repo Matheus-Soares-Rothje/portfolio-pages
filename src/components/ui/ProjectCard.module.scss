@@ -1,0 +1,464 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// ProjectCard.module.scss — elemento de menu de videogame, não card de produto
+//
+// Referências visuais: Persona 5 (menu de Confidants), NieR:Automata (logs),
+// Final Fantasy (lista de habilidades), Cyberpunk 2077 (fichas de missão).
+//
+// Arquitetura 3D (inalterada):
+//   .scene  → perspective
+//   .card   → rotateX/Y via JS, transform-style: preserve-3d
+//   .face   → clip-path aqui (não no .card)
+//   .shadow → translateZ(-20px)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Scene ───────────────────────────────────────────────────────────────────
+.scene {
+  perspective:        1000px;
+  perspective-origin: 50% 35%;
+  position:           relative;
+  // Permite scroll vertical sem interferir com o tilt horizontal
+  touch-action:       pan-y;
+}
+
+// ─── Card (recebe transform via JS) ─────────────────────────────────────────
+.card {
+  position:        relative;
+  width:           100%;
+  transform-style: preserve-3d;
+  transform:       rotateX(0deg) rotateY(0deg);
+  transition:      transform 0.65s var(--ease-out-expo);
+  // will-change só ativo durante hover para economizar memória GPU
+  &:hover { will-change: transform; }
+  animation:       cardEnter 0.5s var(--ease-out-expo) both;
+}
+
+// ─── Sombra vermelha no chão (3D) ────────────────────────────────────────────
+.shadow {
+  position:   absolute;
+  inset:      8px -6px -16px 6px;
+  z-index:    -1;
+  background: rgba(226, 0, 26, 0.15);
+  filter:     blur(16px);
+  transform:  translateZ(-20px);
+  opacity:    0;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+
+  .card:hover & {
+    opacity: 1;
+    filter:  blur(22px);
+  }
+}
+
+// ─── Face frontal ────────────────────────────────────────────────────────────
+.face {
+  position:         relative;
+  background:       var(--p5-black-panel);
+  // Borda dupla estilo P5: borda primária + offset shadow
+  border:           2px solid var(--p5-gray-mid);
+  box-shadow:       3px 3px 0 0 rgba(0,0,0,0.8);
+  display:          flex;
+  flex-direction:   column;
+  overflow:         hidden;
+  // Corte assimétrico: canto sup-dir + canto inf-esq
+  clip-path: polygon(
+    0 0,
+    calc(100% - 24px) 0,
+    100% 24px,
+    100% 100%,
+    24px 100%,
+    0 calc(100% - 24px)
+  );
+  transition:
+    border-color 0.25s var(--ease-out-expo),
+    box-shadow   0.25s var(--ease-out-expo);
+
+  .card:hover & {
+    border-color: var(--p5-red);
+    box-shadow:   4px 4px 0 0 var(--p5-red-dark), var(--glow-sm);
+  }
+}
+
+// ─── Glow de luz seguindo o mouse ────────────────────────────────────────────
+.glowLayer {
+  position:      absolute;
+  inset:         0;
+  z-index:       5;
+  pointer-events:none;
+  opacity:       0;
+  background:    radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255,255,255,0.07) 0%,
+    rgba(226,0,26,0.05)   40%,
+    transparent           65%
+  );
+  transition:    opacity 0.3s ease;
+  mix-blend-mode:screen;
+
+  .card:hover & { opacity: 1; }
+}
+
+// ─── Triângulos de canto (assinatura P5) ─────────────────────────────────────
+// Superior direito — vermelho
+.cornerTR {
+  position:   absolute;
+  top:        -1px;
+  right:      -1px;
+  width:      26px;
+  height:     26px;
+  background: var(--p5-red);
+  clip-path:  polygon(0 0, 100% 100%, 100% 0);
+  z-index:    6;
+  transform:  translateZ(3px);
+  transition: background 0.25s, width 0.25s, height 0.25s;
+
+  .card:hover & {
+    background: var(--p5-white);
+    width:      30px;
+    height:     30px;
+  }
+}
+
+// Inferior esquerdo — cinza
+.cornerBL {
+  position:   absolute;
+  bottom:     -1px;
+  left:       -1px;
+  width:      26px;
+  height:     26px;
+  background: var(--p5-gray-mid);
+  clip-path:  polygon(0 0, 0 100%, 100% 100%);
+  z-index:    6;
+  transition: background 0.25s;
+
+  .card:hover & { background: var(--p5-red-dark); }
+}
+
+// ─── Topo: faixa de HUD com número e tipo ────────────────────────────────────
+.hudTop {
+  position:        relative;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         var(--sp-2) var(--sp-4) var(--sp-2) var(--sp-3);
+  background:      rgba(226, 0, 26, 0.08);
+  border-bottom:   1px solid var(--p5-gray-mid);
+  flex-shrink:     0;
+  transition:      background 0.25s;
+
+  .card:hover & {
+    background: rgba(226, 0, 26, 0.16);
+  }
+
+  // Linha vermelha à esquerda
+  &::before {
+    content:    '';
+    position:   absolute;
+    left:       0; top: 0; bottom: 0;
+    width:      3px;
+    background: var(--p5-red);
+    box-shadow: var(--glow-sm);
+  }
+}
+
+.hudIndex {
+  font-family:    var(--font-display);
+  font-size:      var(--text-xl);
+  color:          var(--p5-red);
+  letter-spacing: 0.04em;
+  line-height:    1;
+  text-shadow:    2px 2px 0 var(--p5-red-deeper);
+  transition:     color 0.25s, text-shadow 0.25s;
+
+  .card:hover & {
+    color:       var(--p5-white);
+    text-shadow: 2px 2px 0 var(--p5-red-dark);
+  }
+}
+
+.hudType {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  // Losango decorativo
+  &::before {
+    content:    '';
+    display:    inline-block;
+    width:      5px;
+    height:     5px;
+    background: var(--p5-red);
+    clip-path:  polygon(50% 0%,100% 50%,50% 100%,0% 50%);
+    opacity:    0.6;
+  }
+}
+
+.hudStatus {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  opacity:        0;
+  display:        flex;
+  align-items:    center;
+  gap:            4px;
+  transition:     opacity 0.2s;
+
+  .card:hover & { opacity: 1; }
+
+  &::before {
+    content:       '';
+    display:       inline-block;
+    width:         5px;
+    height:        5px;
+    background:    var(--p5-red);
+    border-radius: 50%;
+    animation:     p5-pulse-red 1s infinite;
+  }
+}
+
+// ─── Imagem com overlay de scanlines ─────────────────────────────────────────
+.image {
+  position:     relative;
+  aspect-ratio: 16 / 9;
+  overflow:     hidden;
+  background:   var(--p5-black-pure);
+  flex-shrink:  0;
+
+  img {
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+    display:    block;
+    filter:     grayscale(40%) contrast(1.1) brightness(0.85);
+    transition:
+      filter    0.5s var(--ease-out-expo),
+      transform 0.5s var(--ease-out-expo);
+  }
+
+  .card:hover & img {
+    filter:    grayscale(0%) contrast(1.15) brightness(1);
+    transform: scale(1.06);
+  }
+}
+
+// Scanlines sobre a imagem
+.imageScanlines {
+  position:       absolute;
+  inset:          0;
+  z-index:        2;
+  pointer-events: none;
+  background:     repeating-linear-gradient(
+    0deg,
+    transparent, transparent 3px,
+    rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+  );
+  transition: opacity 0.4s;
+
+  .card:hover & { opacity: 0.4; }
+}
+
+// Gradiente vermelho na borda inferior da imagem (transição para o body)
+.imageFooter {
+  position:       absolute;
+  bottom:         0; left: 0; right: 0;
+  height:         48px;
+  z-index:        3;
+  pointer-events: none;
+  background:     linear-gradient(to bottom, transparent, rgba(0,0,0,0.75));
+}
+
+// Placeholder sem imagem — grid de losangos
+.imagePlaceholder {
+  width:           100%;
+  height:          100%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      var(--p5-black-pure), var(--p5-black-pure) 8px,
+      rgba(226,0,26,0.04) 8px, rgba(226,0,26,0.04) 16px
+    );
+}
+
+.placeholderIndex {
+  font-family:    var(--font-display);
+  font-size:      5rem;
+  color:          rgba(226, 0, 26, 0.1);
+  letter-spacing: 0.08em;
+  transition:     color 0.3s;
+
+  .card:hover & { color: rgba(226, 0, 26, 0.22); }
+}
+
+// ─── Corpo — ficha de dados ───────────────────────────────────────────────────
+.body {
+  padding: var(--sp-3) var(--sp-4) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex: 1;
+}
+
+// Título: faixa de texto com sweep de fundo no hover
+.title {
+  position:       relative;
+  font-family:    var(--font-heading);
+  font-size:      var(--text-base);
+  font-weight:    700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--p5-white);
+  padding:        0.15em 0.6em 0.15em 0.5em;
+  display:        inline-block;
+  align-self:     flex-start;
+  clip-path:      var(--clip-banner);
+  transition:     color 0.25s, background 0.25s;
+
+  .card:hover & {
+    background: var(--p5-red);
+    color:      var(--p5-white);
+  }
+}
+
+// Descrição: mais compacta, 2 linhas
+.desc {
+  font-family:     var(--font-body);
+  font-size:       var(--text-sm);
+  line-height:     1.55;
+  color:           var(--p5-white-dim);
+  flex:            1;
+  // Limita a 2 linhas com ellipsis
+  display:         -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow:        hidden;
+}
+
+.tags {
+  display:   flex;
+  flex-wrap: wrap;
+  gap:       var(--sp-1);
+}
+
+// ─── Rodapé: prompt de seleção estilo RPG ────────────────────────────────────
+.footer {
+  padding:      var(--sp-2) var(--sp-4) var(--sp-3);
+  border-top:   1px solid var(--p5-gray-mid);
+  display:      flex;
+  align-items:  center;
+  justify-content: space-between;
+  gap:          var(--sp-2);
+  transition:   border-color 0.25s, background 0.25s;
+
+  .card:hover & {
+    border-color: rgba(226, 0, 26, 0.4);
+    background:   rgba(226, 0, 26, 0.04);
+  }
+}
+
+// Prompt "▶ SELECIONAR" visível apenas no hover
+.footerPrompt {
+  font-family:    var(--font-heading);
+  font-size:      10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-1);
+  opacity:        0;
+  transform:      translateX(-6px);
+  transition:     opacity 0.2s, transform 0.3s var(--ease-out-expo);
+
+  .card:hover & {
+    opacity:   1;
+    transform: translateX(0);
+  }
+}
+
+// Links externos (compactos, sem destaque — a ação principal é o clique no card)
+.links {
+  display:     flex;
+  gap:         var(--sp-2);
+  margin-left: auto;
+}
+
+.link {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration:none;
+  padding:        0.3em 0.7em;
+  border:         1px solid var(--p5-gray-mid);
+  color:          var(--p5-gray-light);
+  clip-path:      var(--clip-tag);
+  transition:
+    background   0.2s var(--ease-out-expo),
+    border-color 0.2s var(--ease-out-expo),
+    color        0.2s var(--ease-out-expo);
+
+  &:hover {
+    background:   var(--p5-red);
+    border-color: var(--p5-red);
+    color:        var(--p5-white);
+  }
+}
+
+// ─── Entrada ──────────────────────────────────────────────────────────────────
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(18px) rotateX(6deg) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    rotateX(0deg) scale(1); }
+}
+
+// ─── Reduzir movimento ────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .card      { transition: none; animation: none; }
+  .glowLayer { display: none; }
+}
+
+// ─── Mobile: sem tilt 3D (touch não tem hover), foco no visual ───────────────
+@media (max-width: 639px) {
+  .scene {
+    width: 100%;
+  }
+
+  // Sem transição de transform no touch (elimina lag)
+  .card {
+    will-change: auto;
+  }
+
+  // Toque: feedback de press
+  .card:active .face {
+    border-color: var(--p5-red);
+    box-shadow:   2px 2px 0 0 var(--p5-red-dark);
+  }
+
+  // Imagem: sem zoom no hover (não existe hover no touch)
+  .image img {
+    filter: grayscale(15%) contrast(1.1);
+  }
+
+  // Título: fundo vermelho permanente no mobile (sem hover)
+  .title {
+    background: transparent;
+  }
+
+  // Footer prompt: sempre visível no mobile
+  .footerPrompt {
+    opacity:   1;
+    transform: translateX(0);
+    color:     var(--p5-gray-light);
+    font-size: 8px;
+  }
+}

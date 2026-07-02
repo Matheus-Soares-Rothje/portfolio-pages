@@ -1,0 +1,148 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// SkillBar.module.scss — barra de habilidade com reveal animado estilo RPG
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── Row (nome + barra + nível) ───────────────────────────────────────────────
+.row {
+  display: grid;
+  grid-template-columns: 140px 1fr 52px;
+  align-items: center;
+  gap: var(--sp-3);
+  // Fade-in de entrada (opacity + translateX)
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity  0.4s var(--ease-out-expo),
+    transform 0.4s var(--ease-out-expo);
+
+  &--visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// ─── Nome da skill ────────────────────────────────────────────────────────────
+.name {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p5-white-dim);
+  transition: color var(--duration-base) var(--ease-out-expo);
+
+  .row--visible & {
+    color: var(--p5-white);
+  }
+}
+
+// ─── Track da barra ───────────────────────────────────────────────────────────
+.track {
+  position: relative;
+  height: 6px;
+  background: var(--p5-gray-dark);
+  clip-path: var(--clip-tag);
+  overflow: visible;   // visible para a partícula de impacto
+
+  // Borda sutil
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255,255,255,0.05);
+    clip-path: inherit;
+    pointer-events: none;
+  }
+}
+
+// ─── Fill da barra ────────────────────────────────────────────────────────────
+.fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: var(--p5-red);
+  box-shadow: var(--glow-sm);
+  // largura e transition-duration via style inline
+  width: 0%;
+  transition: width var(--duration-slow) var(--ease-out-expo);
+  transform-origin: left;
+
+  // Shimmer sobre a barra enquanto preenche
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.35) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.2s ease-out forwards;
+    animation-play-state: paused;
+  }
+
+  &--animating::after {
+    animation-play-state: running;
+  }
+}
+
+// ─── Partícula de impacto (aparece quando barra termina) ─────────────────────
+.impact {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  // posição left via style inline
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--p5-red);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    animation: impactPop 0.5s var(--ease-out-expo) both;
+  }
+
+  &::after {
+    background: var(--p5-white);
+    animation-delay: 0.06s;
+    transform: scale(0.55);
+  }
+}
+
+// ─── Nível numérico ───────────────────────────────────────────────────────────
+.level {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  color: var(--p5-gray-light);
+  text-align: right;
+  letter-spacing: 0.04em;
+  transition: color var(--duration-base) var(--ease-out-expo);
+
+  &--done {
+    color: var(--p5-red);
+  }
+}
+
+// ─── Keyframes locais ─────────────────────────────────────────────────────────
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+@keyframes impactPop {
+  0%   { opacity: 1; transform: scale(0) rotate(0deg); }
+  60%  { opacity: 1; transform: scale(1.6) rotate(45deg); }
+  100% { opacity: 0; transform: scale(0.8) rotate(90deg); }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 90px 1fr 36px;
+    gap: var(--sp-2);
+  }
+}

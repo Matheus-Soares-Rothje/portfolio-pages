@@ -1,0 +1,9 @@
+{
+  "id": "projeto-3",
+  "title": "Projeto Três",
+  "description": "Descrição detalhada do projeto. Edite este arquivo JSON para atualizar o conteúdo sem tocar em código.",
+  "imageUrl": "/persona-portfolio/assets/projects/projeto-3.jpg",
+  "tags": ["HTML", "CSS", "GSAP"],
+  "liveUrl": "https://example.com",
+  "order": 3
+}

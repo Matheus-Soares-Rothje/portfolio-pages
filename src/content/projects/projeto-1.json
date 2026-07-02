@@ -1,0 +1,10 @@
+{
+  "id": "projeto-1",
+  "title": "Projeto Um",
+  "description": "Descrição detalhada do projeto. Edite este arquivo JSON para atualizar o conteúdo sem tocar em código.",
+  "imageUrl": "/persona-portfolio/assets/projects/projeto-1.jpg",
+  "tags": ["React", "TypeScript", "CSS"],
+  "liveUrl": "https://example.com",
+  "repoUrl": "https://github.com/usuario/projeto-1",
+  "order": 1
+}

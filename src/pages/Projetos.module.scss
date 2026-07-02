@@ -1,0 +1,409 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Projetos.module.scss
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Layout de página ─────────────────────────────────────────────────────────
+.page {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--p5-black);
+  padding: var(--sp-10) var(--sp-10) var(--sp-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  overflow: hidden;
+}
+
+// ─── Fundo ────────────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  // Grid de pontos — mais clean para seção de projetos
+  background-image:
+    radial-gradient(circle, rgba(226,0,26,0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+
+// ─── Cabeçalho ────────────────────────────────────────────────────────────────
+.header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.05s both;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: var(--p5-red);
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, var(--text-5xl));
+  color: var(--p5-white);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-shadow: 4px 4px 0 var(--p5-red-dark);
+  line-height: 1;
+}
+
+.meta {
+  font-family: var(--font-heading);
+  font-size: var(--text-xs);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+
+  span {
+    color: var(--p5-red);
+    font-weight: 700;
+  }
+}
+
+// ─── Filtro de tags ───────────────────────────────────────────────────────────
+.filterBar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--p5-gray-mid);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.15s both;
+}
+
+.filterLabel {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+  margin-right: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.filterTag {
+  position:       relative;
+  font-family:    var(--font-heading);
+  font-size:      var(--text-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding:        0.35em 1.1em 0.35em 0.8em;
+  background:     transparent;
+  border:         1px solid var(--p5-gray-mid);
+  color:          var(--p5-white-dim);
+  clip-path:      var(--clip-tag);
+  cursor:         pointer;
+  transition:
+    background   var(--duration-base) var(--ease-out-expo),
+    color        var(--duration-base) var(--ease-out-expo),
+    border-color var(--duration-base) var(--ease-out-expo),
+    box-shadow   var(--duration-base) var(--ease-out-expo),
+    transform    var(--duration-fast) var(--ease-out-expo);
+
+  &:hover {
+    border-color: var(--p5-red);
+    color:        var(--p5-white);
+    background:   rgba(226, 0, 26, 0.1);
+    transform:    translateY(-1px);
+  }
+
+  &:active { transform: translateY(1px); }
+
+  // Active: sólido com offset shadow e losango prefixo
+  &--active {
+    background:   var(--p5-red);
+    border-color: var(--p5-red);
+    color:        var(--p5-white);
+    box-shadow:   3px 3px 0 var(--p5-red-dark), var(--glow-sm);
+    transform:    translateY(-1px);
+    // Losango decorativo antes do texto
+    &::before {
+      content:     '◆';
+      font-size:   7px;
+      margin-right:0.4em;
+      vertical-align:middle;
+      opacity:     0.8;
+    }
+  }
+}
+
+// ─── Grid de cards ────────────────────────────────────────────────────────────
+.grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--sp-6);
+}
+
+// ─── Card de projeto ──────────────────────────────────────────────────────────
+.card {
+  position: relative;
+  background: var(--p5-black-card);
+  border: 2px solid var(--p5-gray-mid);
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color var(--duration-base) var(--ease-out-expo),
+    box-shadow   var(--duration-base) var(--ease-out-expo),
+    transform    var(--duration-base) var(--ease-out-expo);
+  animation: cardEnter 0.4s var(--ease-out-expo) both;
+
+  &:hover {
+    border-color: var(--p5-red);
+    box-shadow: var(--glow-md);
+    transform: translateY(-3px);
+  }
+}
+
+// Corte vermelho no canto superior direito
+.card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 22px;
+  height: 22px;
+  background: var(--p5-red);
+  clip-path: polygon(0 0, 100% 100%, 100% 0);
+  z-index: 2;
+}
+
+// ─── Imagem do card ───────────────────────────────────────────────────────────
+.cardImage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--p5-black-pure);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%) contrast(1.1);
+    transition: filter var(--duration-slow), transform var(--duration-slow);
+    display: block;
+  }
+
+  .card:hover & img {
+    filter: grayscale(0%) contrast(1.15);
+    transform: scale(1.04);
+  }
+}
+
+// Placeholder quando não há imagem
+.cardImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--p5-black-pure),
+    var(--p5-black-pure) 6px,
+    rgba(226, 0, 26, 0.06) 6px,
+    rgba(226, 0, 26, 0.06) 12px
+  );
+
+  span {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    color: rgba(226, 0, 26, 0.15);
+    letter-spacing: 0.1em;
+  }
+}
+
+// ─── Corpo do card ────────────────────────────────────────────────────────────
+.cardBody {
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  flex: 1;
+}
+
+.cardTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--p5-white);
+}
+
+.cardDesc {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: var(--p5-white-dim);
+  flex: 1;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+// ─── Footer do card (CTAs) ────────────────────────────────────────────────────
+.cardFooter {
+  padding: var(--sp-3) var(--sp-5) var(--sp-4);
+  border-top: 1px solid var(--p5-gray-mid);
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.cardLink {
+  font-family: var(--font-heading);
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.35em 0.9em 0.35em 0.7em;
+  clip-path: var(--clip-tag);
+  border: 1px solid var(--p5-gray-mid);
+  color: var(--p5-white-dim);
+  transition:
+    background  var(--duration-base) var(--ease-out-expo),
+    border-color var(--duration-base) var(--ease-out-expo),
+    color       var(--duration-base) var(--ease-out-expo);
+
+  &:hover {
+    background: var(--p5-red);
+    border-color: var(--p5-red);
+    color: var(--p5-white);
+  }
+
+  &--primary {
+    background: var(--p5-red);
+    border-color: var(--p5-red);
+    color: var(--p5-white);
+    &:hover { box-shadow: var(--glow-sm); }
+  }
+}
+
+// ─── Estado vazio ─────────────────────────────────────────────────────────────
+.empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-20) 0;
+  font-family: var(--font-heading);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: var(--text-4xl);
+  color: var(--p5-red);
+  opacity: 0.3;
+  letter-spacing: 0.1em;
+}
+
+.emptyText {
+  font-size: var(--text-sm);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+}
+
+// ─── Keyframe local ───────────────────────────────────────────────────────────
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  .page {
+    padding: var(--sp-5) 0 calc(var(--sp-6) + 60px);
+    gap:     var(--sp-5);
+  }
+
+  // Header e filtro com padding lateral
+  .header,
+  .filterBar {
+    padding-left:  var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+
+  .title { font-size: var(--text-3xl); }
+
+  // Filtro: scroll horizontal sem quebra
+  .filterBar {
+    flex-wrap:      nowrap;
+    overflow-x:     auto;
+    scrollbar-width:none;
+    padding-bottom: var(--sp-3);
+    gap:            var(--sp-2);
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  // Grid: scroll horizontal snap — mostra 1 card e meio como preview
+  .grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(80vw, 300px), 1fr));
+    grid-auto-flow:        column;
+    grid-auto-columns:     min(80vw, 300px);
+    gap:                   var(--sp-4);
+    overflow-x:            auto;
+    scroll-snap-type:      x mandatory;
+    scrollbar-width:       none;
+    padding:               0 var(--sp-4) var(--sp-2);
+    // Fade nas bordas para indicar scroll
+    -webkit-mask-image:    linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 88%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 88%,
+      transparent 100%
+    );
+
+    &::-webkit-scrollbar { display: none; }
+
+    // Cada li no scroll horizontal
+    & > li {
+      scroll-snap-align: start;
+      width: min(80vw, 300px);
+    }
+  }
+
+  .empty {
+    padding: var(--sp-12) var(--sp-4);
+  }
+}

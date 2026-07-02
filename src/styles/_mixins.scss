@@ -1,0 +1,152 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// MIXINS — reusable style patterns for the Persona 5 design system
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── Glow Effects ────────────────────────────────────────────────────────────
+@mixin glow-red($intensity: 'md') {
+  @if $intensity == 'sm'  { box-shadow: var(--glow-sm); }
+  @if $intensity == 'md'  { box-shadow: var(--glow-md); }
+  @if $intensity == 'lg'  { box-shadow: var(--glow-lg); }
+  @if $intensity == 'xl'  { box-shadow: var(--glow-xl); }
+}
+
+@mixin glow-red-text {
+  text-shadow: var(--glow-text);
+}
+
+@mixin glow-border-red {
+  box-shadow: 0 0 0 1px var(--p5-red), var(--glow-sm);
+}
+
+// ─── Diagonal Shapes ─────────────────────────────────────────────────────────
+@mixin diagonal-banner($direction: 'left') {
+  @if $direction == 'left' {
+    clip-path: var(--clip-banner);
+  } @else {
+    clip-path: var(--clip-banner-r);
+  }
+}
+
+@mixin diagonal-tag($direction: 'left') {
+  @if $direction == 'left' {
+    clip-path: var(--clip-tag);
+  } @else {
+    clip-path: var(--clip-tag-r);
+  }
+}
+
+@mixin diagonal-slash {
+  clip-path: var(--clip-slash);
+}
+
+// ─── Asymmetric Corner Clip ───────────────────────────────────────────────────
+@mixin corner-clip($corner: 'tl', $size: 16px) {
+  @if $corner == 'tl' {
+    clip-path: polygon(#{$size} 0, 100% 0, 100% 100%, 0 100%, 0 #{$size});
+  }
+  @if $corner == 'tr' {
+    clip-path: polygon(0 0, calc(100% - #{$size}) 0, 100% #{$size}, 100% 100%, 0 100%);
+  }
+  @if $corner == 'br' {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - #{$size}), calc(100% - #{$size}) 100%, 0 100%);
+  }
+  @if $corner == 'bl' {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, #{$size} 100%, 0 calc(100% - #{$size}));
+  }
+}
+
+// ─── HQ Manga Texture ────────────────────────────────────────────────────────
+@mixin hq-texture($opacity: 0.03) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='0.5' fill='white'/%3E%3Ccircle cx='3' cy='3' r='0.5' fill='white'/%3E%3C/svg%3E");
+    opacity: $opacity;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+@mixin hq-halftone($color: 'white', $opacity: 0.05) {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    @if $color == 'red' {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='1.2' fill='%23e2001a'/%3E%3C/svg%3E");
+    } @else {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='1.2' fill='white'/%3E%3C/svg%3E");
+    }
+    opacity: $opacity;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+// ─── Thick Border (P5 style — offset solid) ───────────────────────────────────
+@mixin p5-border($color: var(--p5-white), $width: 3px, $offset: 4px) {
+  border: $width solid $color;
+  box-shadow: $offset $offset 0 0 $color;
+}
+
+@mixin p5-border-red($width: 3px, $offset: 4px) {
+  border: $width solid var(--p5-red);
+  box-shadow: $offset $offset 0 0 var(--p5-red-dark);
+}
+
+// ─── Diagonal Stripe Background ──────────────────────────────────────────────
+@mixin diagonal-stripes($color: rgba(255,255,255,0.04), $size: 20px) {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent #{$size},
+    #{$color} #{$size},
+    #{$color} calc(#{$size} + 2px)
+  );
+}
+
+// ─── Typography Helpers ───────────────────────────────────────────────────────
+@mixin display-font($size: var(--text-4xl), $weight: 700) {
+  font-family: var(--font-display);
+  font-size: $size;
+  font-weight: $weight;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+@mixin heading-font($size: var(--text-2xl), $weight: 700) {
+  font-family: var(--font-heading);
+  font-size: $size;
+  font-weight: $weight;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+@mixin mobile  { @media (max-width: 639px) { @content; } }
+@mixin tablet  { @media (min-width: 640px) and (max-width: 1023px) { @content; } }
+@mixin desktop { @media (min-width: 1024px) { @content; } }
+
+// ─── Scanline Overlay ─────────────────────────────────────────────────────────
+@mixin scanlines($opacity: 0.04) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,#{$opacity * 10}) 2px,
+      rgba(0,0,0,#{$opacity * 10}) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+}

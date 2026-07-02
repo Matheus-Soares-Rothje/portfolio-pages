@@ -1,0 +1,144 @@
+// ─── Base ─────────────────────────────────────────────────────────────────────
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-base) var(--ease-out-expo),
+    box-shadow       var(--duration-base) var(--ease-out-expo),
+    transform        var(--duration-fast) var(--ease-out-expo),
+    filter           var(--duration-base) var(--ease-out-expo);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  // Diagonal right edge (P5 nav style)
+  &--diagonal {
+    clip-path: var(--clip-banner);
+    padding-right: 1.8em;
+  }
+
+  // Active press
+  &:active:not(:disabled) {
+    transform: translate(2px, 2px);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// ─── Sizes ────────────────────────────────────────────────────────────────────
+.btn--sm  { font-size: var(--text-sm);  padding: 0.35em 1.1em; }
+.btn--md  { font-size: var(--text-base); padding: 0.55em 1.4em; }
+.btn--lg  { font-size: var(--text-lg);  padding: 0.65em 1.8em; }
+
+// ─── Variants ─────────────────────────────────────────────────────────────────
+.btn--primary {
+  background-color: var(--p5-red);
+  color: var(--p5-white);
+  box-shadow: var(--shadow-red);
+
+  &:hover:not(:disabled) {
+    background-color: var(--p5-red-dark);
+    box-shadow: 6px 6px 0 0 var(--p5-red-deeper), var(--glow-sm);
+  }
+}
+
+.btn--outline {
+  background-color: transparent;
+  color: var(--p5-white);
+  border: var(--border-3) solid var(--p5-white);
+  box-shadow: var(--shadow-md);
+  clip-path: none; // outline doesn't clip (border would look broken)
+
+  &:hover:not(:disabled) {
+    background-color: var(--p5-white);
+    color: var(--p5-black);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.btn--ghost {
+  background-color: transparent;
+  color: var(--p5-white-dim);
+  border: var(--border-2) solid var(--p5-gray-mid);
+  clip-path: none;
+
+  &:hover:not(:disabled) {
+    color: var(--p5-white);
+    border-color: var(--p5-red);
+    background-color: var(--p5-red-muted);
+  }
+}
+
+.btn--danger {
+  background-color: var(--p5-red-deeper);
+  color: var(--p5-white);
+  border: var(--border-2) solid var(--p5-red);
+
+  &:hover:not(:disabled) {
+    background-color: var(--p5-red);
+    box-shadow: var(--glow-md);
+  }
+}
+
+.btn--nav {
+  background-color: transparent;
+  color: var(--p5-white);
+  font-size: var(--text-sm);
+  padding: 0.4em 1.6em 0.4em 1em;
+  letter-spacing: 0.1em;
+
+  // Red sweep on hover — the core P5 nav interaction
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--p5-red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-base) var(--ease-out-expo);
+    z-index: -1;
+  }
+
+  &:hover:not(:disabled)::before,
+  &.active::before {
+    transform: scaleX(1);
+  }
+
+  &.active {
+    color: var(--p5-white);
+    font-weight: 700;
+  }
+}
+
+// ─── Glow modifier ────────────────────────────────────────────────────────────
+.btn--glow {
+  &:hover:not(:disabled) {
+    filter: drop-shadow(0 0 12px rgba(226, 0, 26, 0.7));
+  }
+}
+
+// ─── Icon ─────────────────────────────────────────────────────────────────────
+.btn__icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 1.1em;
+}
+
+.btn__label {
+  position: relative;
+  z-index: 1;
+}

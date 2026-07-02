@@ -1,0 +1,89 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// KEYFRAMES — all CSS animations in one place
+// Framer Motion / GSAP handle page/component transitions.
+// These are for ambient, decorative, and micro-interaction effects.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── TV Flicker ───────────────────────────────────────────────────────────────
+@keyframes p5-flicker {
+  0%, 89%, 91%, 93%, 95%, 100% { opacity: 1; }
+  90%, 92%, 94%                { opacity: 0.35; }
+}
+
+// ─── Pulse Glow ──────────────────────────────────────────────────────────────
+@keyframes p5-pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(226, 0, 26, 0.7); }
+  50%       { box-shadow: 0 0 0 10px rgba(226, 0, 26, 0); }
+}
+
+@keyframes p5-pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(226, 0, 26, 0.5)); }
+  50%       { filter: drop-shadow(0 0 18px rgba(226, 0, 26, 0.9)); }
+}
+
+// ─── Stamp ───────────────────────────────────────────────────────────────────
+@keyframes p5-stamp {
+  0%   { transform: scale(1.4) rotate(-4deg); opacity: 0; }
+  55%  { transform: scale(0.93) rotate(1.5deg); opacity: 1; }
+  75%  { transform: scale(1.02) rotate(-0.5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+// ─── Slide in from left ───────────────────────────────────────────────────────
+@keyframes p5-slide-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+// ─── Slide in from right ──────────────────────────────────────────────────────
+@keyframes p5-slide-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+// ─── Clip wipe (diagonal reveal) ─────────────────────────────────────────────
+@keyframes p5-clip-reveal {
+  from { clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); }
+  to   { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
+// ─── Scanline drift ──────────────────────────────────────────────────────────
+@keyframes p5-scanline {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
+// ─── Nav underline slide ─────────────────────────────────────────────────────
+@keyframes p5-underline {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+// ─── Text glitch ─────────────────────────────────────────────────────────────
+@keyframes p5-glitch-1 {
+  0%, 100% { clip-path: inset(0 0 95% 0); transform: translateX(0); }
+  20%       { clip-path: inset(30% 0 50% 0); transform: translateX(-3px); }
+  40%       { clip-path: inset(60% 0 15% 0); transform: translateX(3px); }
+  60%       { clip-path: inset(10% 0 70% 0); transform: translateX(-2px); }
+  80%       { clip-path: inset(80% 0 5% 0);  transform: translateX(2px); }
+}
+
+@keyframes p5-glitch-2 {
+  0%, 100% { clip-path: inset(95% 0 0 0); transform: translateX(0); }
+  20%       { clip-path: inset(40% 0 40% 0); transform: translateX(3px); }
+  40%       { clip-path: inset(20% 0 65% 0); transform: translateX(-3px); }
+  60%       { clip-path: inset(75% 0 10% 0); transform: translateX(2px); }
+  80%       { clip-path: inset(5% 0 85% 0);  transform: translateX(-2px); }
+}
+
+// ─── Diagonal stripe march ────────────────────────────────────────────────────
+@keyframes p5-stripe-march {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 40px; }
+}
+
+// ─── Floating (character art) ────────────────────────────────────────────────
+@keyframes p5-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}

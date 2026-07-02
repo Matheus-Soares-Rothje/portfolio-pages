@@ -1,0 +1,357 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Experiencias.module.scss
+// Layout: personagem fixo esq + log de missões à dir
+// Referência: tela de histórico de Confidants / Diário de missão (P5)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Tela raiz ────────────────────────────────────────────────────────────────
+.screen {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  background: var(--p5-black-pure);
+  overflow: hidden;
+}
+
+// ─── Fundo ────────────────────────────────────────────────────────────────────
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -52deg,
+      transparent, transparent 28px,
+      rgba(226, 0, 26, 0.016) 28px, rgba(226, 0, 26, 0.016) 56px
+    );
+    animation: p5-stripe-march 5s linear infinite;
+  }
+
+  // Gradiente de profundidade — vermelho à direita, preto à esquerda
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent          0%,
+      rgba(226,0,26,0.04) 60%,
+      rgba(226,0,26,0.08) 100%
+    );
+  }
+}
+
+// ─── Coluna esquerda — personagem ─────────────────────────────────────────────
+.characterCol {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.characterBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    150deg,
+    rgba(226, 0, 26, 0.15) 0%,
+    rgba(0, 0, 0, 0.98)    55%
+  );
+  clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
+}
+
+.characterEdge {
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--p5-red), transparent 75%);
+  box-shadow: var(--glow-sm);
+  z-index: 3;
+}
+
+// Badge de identificação
+.characterBadge {
+  position: absolute;
+  top: var(--sp-6);
+  left: var(--sp-5);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  animation: p5-slide-left 0.4s var(--ease-out-expo) 0.05s both;
+}
+
+.badgeSection {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 2px;
+    background: var(--p5-red);
+  }
+}
+
+.badgeName {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p5-white);
+  text-shadow: 3px 3px 0 var(--p5-red-dark);
+  line-height: 1;
+}
+
+// Contador de missões
+.badgeCounter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  background: rgba(226, 0, 26, 0.1);
+  border-left: 2px solid var(--p5-red);
+  width: fit-content;
+}
+
+.badgeCounterValue {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--p5-red);
+  line-height: 1;
+}
+
+.badgeCounterLabel {
+  font-family: var(--font-heading);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+}
+
+// Personagem
+.character {
+  position: relative;
+  z-index: 2;
+  height: 88vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter:
+    drop-shadow(-4px 0 20px rgba(226, 0, 26, 0.2))
+    drop-shadow(0 20px 40px rgba(0, 0, 0, 0.9));
+  animation: p5-float 5s ease-in-out infinite;
+  user-select: none;
+  pointer-events: none;
+}
+
+.characterGlow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65%;
+  height: 50px;
+  background: radial-gradient(ellipse at center,
+    rgba(226, 0, 26, 0.22), transparent 70%
+  );
+  z-index: 1;
+  animation: p5-pulse-glow 3.5s ease-in-out infinite;
+}
+
+// ─── Coluna direita — log de missões ─────────────────────────────────────────
+.logCol {
+  position: relative;
+  z-index: 3;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--p5-red) transparent;
+  padding: var(--sp-10) var(--sp-10) var(--sp-20) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+// ─── Cabeçalho do log ────────────────────────────────────────────────────────
+.logHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.1s both;
+}
+
+.logEyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--p5-red);
+
+  &::before {
+    content: '//';
+    color: var(--p5-gray-light);
+    letter-spacing: 0;
+  }
+}
+
+.logTitle {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 7vw, var(--text-hero));
+  color: var(--p5-white);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 0.9;
+  text-shadow: 4px 4px 0 var(--p5-red-dark);
+}
+
+.logDivider {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-1);
+
+  &::before {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--p5-red), transparent);
+  }
+
+  span {
+    font-family: var(--font-heading);
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    color: var(--p5-gray-light);
+    text-transform: uppercase;
+  }
+}
+
+// ─── Timeline — container ─────────────────────────────────────────────────────
+// Os itens individuais são gerenciados por TimelineEntry.module.scss.
+// Este módulo define apenas o container <ol>.
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+// ─── Rodapé da seção ─────────────────────────────────────────────────────────
+.logFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--p5-gray-mid);
+  animation: p5-slide-left 0.45s var(--ease-out-expo) 0.5s both;
+}
+
+.logFooterHint {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--p5-gray-light);
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+
+  &::before {
+    content: '▶';
+    font-size: 8px;
+    color: var(--p5-red);
+  }
+}
+
+// ─── Tablet ───────────────────────────────────────────────────────────────────
+@include tablet {
+  .screen {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .logCol {
+    padding: var(--sp-8) var(--sp-6) var(--sp-16) var(--sp-6);
+  }
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  // ── Layout: avatar em faixa de 180px — não 45vh desperdiçado ──────────
+  .screen {
+    grid-template-columns: 1fr;
+    grid-template-rows:    180px auto;
+  }
+
+  .characterCol {
+    position: relative;
+    height:   180px;
+    overflow: hidden;
+  }
+
+  // Personagem corta do peito para baixo, paisagem horizontal
+  .character {
+    height:          280%;
+    object-position: center 5%;
+    opacity:         0.75;
+  }
+
+  .characterBg {
+    background: linear-gradient(
+      to bottom,
+      rgba(226, 0, 26, 0.2) 0%,
+      rgba(0, 0, 0, 0.95)   100%
+    );
+  }
+
+  // Badge reposicionado para canto esquerdo da faixa
+  .characterBadge {
+    top:  var(--sp-3);
+    left: var(--sp-4);
+  }
+
+  .badgeName { font-size: var(--text-xl); }
+
+  .badgeCounter {
+    padding: var(--sp-1) var(--sp-2);
+  }
+
+  // ── Log: padding lateral menor, espaço para BottomNav ─────────────────
+  .logCol {
+    padding: var(--sp-5) var(--sp-4) calc(var(--sp-6) + 60px);
+    gap:     var(--sp-5);
+  }
+
+  .logTitle { font-size: var(--text-3xl); }
+
+  // Timeline: margem reduzida
+  .timeline {
+    &::before { left: 14px; }
+  }
+}

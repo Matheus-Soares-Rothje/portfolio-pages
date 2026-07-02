@@ -1,0 +1,336 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// FormField.module.scss — animações de foco premium estilo P5
+//
+// Anatomia do campo:
+//   .wrap       → posição relativa, gerencia estado via classes BEM
+//   .label      → flutua de placeholder para topo no focus/filled
+//   .inputWrap  → container com bordas animadas
+//     .borderT  → borda superior (sweep da esquerda no focus)
+//     .borderB  → borda inferior (sweep da direita no focus)
+//     .borderL  → borda esquerda (grow de cima)
+//     .borderR  → borda direita  (grow de baixo)
+//     .input    → o <input> ou <textarea> real
+//     .scanline → linha de varredura CRT ao ganhar foco
+//   .corner     → triângulo vermelho no canto sup-dir (aparece no focus)
+//   .errorMsg   → mensagem de erro com stamp animation
+//   .charCount  → contador de caracteres (só em textarea)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ─── Wrapper do campo ─────────────────────────────────────────────────────────
+.wrap {
+  position: relative;
+  display:  flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+// ─── Label flutuante ──────────────────────────────────────────────────────────
+.label {
+  position:       absolute;
+  left:           var(--sp-4);
+  top:            50%;
+  transform:      translateY(-50%);
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  font-weight:    700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  pointer-events: none;
+  z-index:        2;
+  transform-origin: left center;
+  transition:
+    top            0.25s var(--ease-out-expo),
+    transform      0.25s var(--ease-out-expo),
+    font-size      0.25s var(--ease-out-expo),
+    color          0.25s var(--ease-out-expo),
+    letter-spacing 0.25s var(--ease-out-expo);
+
+  // Textarea: label parte do topo
+  .wrap--textarea & {
+    top: var(--sp-4);
+    transform: translateY(0);
+  }
+}
+
+// Label flutuando (focused ou filled)
+.wrap--focused .label,
+.wrap--filled  .label {
+  top:            var(--sp-2);
+  transform:      translateY(0) scale(0.78);
+  font-size:      var(--text-xs);
+  color:          var(--p5-red);
+  letter-spacing: 0.3em;
+
+  .wrap--textarea & {
+    top:       calc(-1 * var(--sp-5));
+    transform: scale(0.78);
+    left:      0;
+  }
+}
+
+// Label com erro
+.wrap--error .label {
+  color: #ff4444;
+}
+
+// ─── Container das bordas ─────────────────────────────────────────────────────
+.inputWrap {
+  position: relative;
+  // Padding-top para acomodar a label flutuante
+  padding-top: var(--sp-5);
+}
+
+.wrap--textarea .inputWrap {
+  padding-top: 0;
+}
+
+// ─── Bordas animadas individualmente ─────────────────────────────────────────
+// Cada borda é um elemento absoluto que cresce/aparece no foco.
+// Usamos elementos separados para poder animar cada lado de forma diferente.
+
+.borderT, .borderB, .borderL, .borderR {
+  position:   absolute;
+  background: var(--p5-gray-mid);
+  transition: background 0.2s;
+  pointer-events: none;
+}
+
+// Superior e inferior: largura 100%, altura fina, sweep horizontal
+.borderT { top: 0;    left: 0; right: 0; height: 1px; transform-origin: left; }
+.borderB { bottom: 0; left: 0; right: 0; height: 1px; transform-origin: right; }
+
+// Lateral esquerda e direita: largura fina, altura 100%, sweep vertical
+.borderL { top: 0; bottom: 0; left: 0;  width: 2px; transform-origin: top;    transform: scaleY(0); }
+.borderR { top: 0; bottom: 0; right: 0; width: 1px; transform-origin: bottom; transform: scaleY(0); }
+
+// No foco: bordas viram vermelhas e laterais crescem
+.wrap--focused .borderT,
+.wrap--focused .borderB { background: var(--p5-red); }
+
+.wrap--focused .borderL {
+  background: var(--p5-red);
+  box-shadow: var(--glow-sm);
+  transform:  scaleY(1);
+  transition: transform 0.3s var(--ease-out-expo), background 0.2s, box-shadow 0.2s;
+}
+
+.wrap--focused .borderR {
+  background: rgba(226, 0, 26, 0.3);
+  transform:  scaleY(1);
+  transition: transform 0.3s var(--ease-out-expo) 0.05s, background 0.2s;
+}
+
+// No erro: bordas vermelhas intensas
+.wrap--error .borderT,
+.wrap--error .borderB,
+.wrap--error .borderL,
+.wrap--error .borderR {
+  background: #ff4444;
+  transform:  scaleY(1);
+}
+
+.wrap--error .borderL { box-shadow: 0 0 8px rgba(255, 68, 68, 0.6); }
+
+// ─── Input / Textarea ─────────────────────────────────────────────────────────
+.input {
+  width:          100%;
+  background:     var(--p5-black-panel);
+  border:         none;
+  outline:        none;
+  padding:        var(--sp-3) var(--sp-4);
+  font-family:    var(--font-heading);
+  font-size:      var(--text-base);
+  font-weight:    500;
+  letter-spacing: 0.06em;
+  color:          var(--p5-white);
+  caret-color:    var(--p5-red);
+  display:        block;
+  position:       relative;
+  z-index:        1;
+  // Fundo ligeiramente mais claro no foco
+  transition:     background 0.2s;
+
+  &::placeholder { color: transparent; }   // placeholder escondido — usamos label flutuante
+
+  .wrap--focused & {
+    background: rgba(20, 0, 0, 0.6);
+  }
+}
+
+textarea.input {
+  resize:     vertical;
+  min-height: 120px;
+  padding-top:var(--sp-4);
+  line-height:1.6;
+}
+
+// ─── Linha de varredura CRT ao focar ─────────────────────────────────────────
+.scanline {
+  position:       absolute;
+  left:           0; right: 0;
+  height:         2px;
+  background:     linear-gradient(
+    to right,
+    transparent,
+    rgba(226, 0, 26, 0.6) 30%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(226, 0, 26, 0.6) 70%,
+    transparent
+  );
+  pointer-events: none;
+  z-index:        3;
+  opacity:        0;
+  top:            var(--sp-5);   // começa no topo do input
+
+  .wrap--focused & {
+    animation: scanPass 0.5s var(--ease-out-expo) both;
+  }
+}
+
+.wrap--textarea .scanline { top: 0; }
+
+// ─── Triângulo de canto (aparece no foco) ────────────────────────────────────
+.corner {
+  position:   absolute;
+  top:        0; right: 0;
+  width:      16px;
+  height:     16px;
+  background: var(--p5-gray-mid);
+  clip-path:  polygon(0 0, 100% 100%, 100% 0);
+  z-index:    4;
+  transition: background 0.2s, width 0.2s var(--ease-out-expo), height 0.2s var(--ease-out-expo);
+
+  .wrap--focused & {
+    background: var(--p5-red);
+    width:      20px;
+    height:     20px;
+    box-shadow: var(--glow-sm);
+  }
+
+  .wrap--error & {
+    background: #ff4444;
+  }
+}
+
+// ─── Cursor piscante no canto inferior direito (enquanto focused) ─────────────
+.cursor {
+  position:   absolute;
+  bottom:     var(--sp-2);
+  right:      var(--sp-3);
+  width:      8px;
+  height:     14px;
+  background: var(--p5-red);
+  opacity:    0;
+  z-index:    2;
+  pointer-events: none;
+
+  .wrap--focused & {
+    opacity:   1;
+    animation: cursorBlink 0.8s step-end infinite;
+  }
+}
+
+// ─── Mensagem de erro ─────────────────────────────────────────────────────────
+.errorMsg {
+  font-family:    var(--font-heading);
+  font-size:      10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          #ff4444;
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+  padding-left:   var(--sp-1);
+  animation:      errorStamp 0.3s var(--ease-out-expo) both;
+
+  &::before {
+    content:    '✕';
+    color:      #ff4444;
+    font-size:  10px;
+    font-weight:700;
+  }
+}
+
+// ─── Contador de caracteres (textarea) ───────────────────────────────────────
+.charCount {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.2em;
+  color:          var(--p5-gray-light);
+  text-align:     right;
+  transition:     color 0.2s;
+
+  &--warn  { color: #ffaa00; }
+  &--limit { color: #ff4444; }
+}
+
+// ─── Shake (campo com erro ao tentar enviar) ──────────────────────────────────
+.wrap--shake {
+  animation: fieldShake 0.45s var(--ease-out-expo) both;
+}
+
+// ─── Keyframes locais ─────────────────────────────────────────────────────────
+@keyframes scanPass {
+  0%   { top: var(--sp-5); opacity: 1; }
+  100% { top: calc(100% - 2px); opacity: 0; }
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes errorStamp {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fieldShake {
+  0%         { transform: translateX(0); }
+  15%        { transform: translateX(-8px); }
+  30%        { transform: translateX(7px); }
+  45%        { transform: translateX(-6px); }
+  60%        { transform: translateX(5px); }
+  75%        { transform: translateX(-3px); }
+  90%        { transform: translateX(2px); }
+  100%       { transform: translateX(0); }
+}
+
+// ─── Reduzir movimento ────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .label         { transition: color 0.2s; }
+  .borderL,
+  .borderR       { transition: none; transform: scaleY(1) !important; }
+  .scanline      { display: none; }
+  .cursor        { display: none; }
+  .wrap--shake   { animation: none; }
+  .errorMsg      { animation: none; }
+}
+
+// ─── Mobile: ajustes para teclado virtual e toque ────────────────────────────
+@media (max-width: 639px) {
+  .input {
+    font-size:  16px;   // previne zoom automático do iOS ao focar
+    padding:    var(--sp-4) var(--sp-3);
+  }
+
+  textarea.input {
+    min-height: 100px;
+    padding-top:var(--sp-4);
+  }
+
+  // Label flutuante: tamanho confortável para leitura mobile
+  .wrap--focused .label,
+  .wrap--filled  .label {
+    font-size: 10px;
+  }
+
+  // Cursor piscante: oculto no mobile (conflita com cursor nativo)
+  .cursor { display: none; }
+
+  // Contador: mais visível
+  .charCount {
+    font-size: 10px;
+  }
+}

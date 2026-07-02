@@ -1,0 +1,328 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// TimelineEntry.module.scss
+// Animações por camada:
+//   1. .entry      → slide + fade (dispara quando visible=true)
+//   2. .line       → height 0→100% (dispara após o entry)
+//   3. .marker     → stamp (escala + rotação)
+//   4. .markerRing → expand + fade
+//   5. .card       → clip-path wipe da esquerda
+//   6. .cardInner  → conteúdo slide-left escalonado
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Wrapper do item ─────────────────────────────────────────────────────────
+.entry {
+  position: relative;
+  padding-left: var(--sp-14);
+  padding-bottom: var(--sp-6);
+
+  // Estado inicial: invisível e deslocado
+  opacity:   0;
+  transform: translateX(-16px);
+
+  // Entra quando .entry--visible é adicionado via JS
+  &--visible {
+    animation: entryReveal 0.5s var(--ease-out-expo) both;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+// ─── Segmento da linha vertical ──────────────────────────────────────────────
+// Cada entry desenha seu próprio segmento — permite animar individualmente
+.line {
+  position: absolute;
+  left:   18px;
+  top:    32px;        // começa abaixo do marcador
+  width:  2px;
+  background: linear-gradient(
+    to bottom,
+    var(--p5-red),
+    rgba(226, 0, 26, 0.25)
+  );
+
+  // Cresce de height: 0 → height real quando visible
+  height:           0;
+  transform-origin: top center;
+  transition:       height 0.6s var(--ease-out-expo);
+
+  .entry--visible & {
+    height: calc(100% - 32px);  // até o próximo marcador
+  }
+
+  // Última entry não tem linha descendente
+  .entry:last-child & {
+    display: none;
+  }
+}
+
+// ─── Marcador losango ────────────────────────────────────────────────────────
+.markerWrap {
+  position: absolute;
+  left: 10px;
+  top:  10px;
+  width:  20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.marker {
+  position:   relative;
+  width:      12px;
+  height:     12px;
+  background: var(--p5-gray-mid);
+  clip-path:  polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transform:  scale(0) rotate(-45deg);
+  transition: background 0.25s;
+
+  // Stamp ao aparecer
+  .entry--visible & {
+    animation: markerStamp 0.45s var(--ease-out-expo) 0.15s both;
+  }
+
+  // Estado ativo
+  .entry--current & {
+    width:      14px;
+    height:     14px;
+    background: var(--p5-red);
+    box-shadow: var(--glow-sm);
+    animation:  markerStamp 0.45s var(--ease-out-expo) 0.15s both,
+                p5-pulse-glow 2.5s ease-in-out 0.6s infinite;
+  }
+}
+
+// Anel externo pulsante (só na entrada atual)
+.markerRing {
+  position:   absolute;
+  inset:      -5px;
+  border:     1px solid var(--p5-red);
+  clip-path:  polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  opacity:    0;
+  transform:  scale(0.4);
+
+  .entry--current.entry--visible & {
+    animation: ringExpand 0.6s var(--ease-out-expo) 0.4s both,
+               p5-pulse-red 2.5s ease-in-out 1s infinite;
+  }
+}
+
+// ─── Card de conteúdo ────────────────────────────────────────────────────────
+.card {
+  position:   relative;
+  background: var(--p5-black-panel);
+  border:     1px solid var(--p5-gray-mid);
+  border-left:3px solid var(--p5-gray-mid);
+  // Corte inferior direito
+  clip-path:  polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  overflow:   hidden;
+  transition:
+    border-color var(--duration-base) var(--ease-out-expo),
+    box-shadow   var(--duration-base) var(--ease-out-expo);
+
+  .entry--current & {
+    border-left-color: var(--p5-red);
+    box-shadow: -2px 0 0 0 var(--p5-red-dark);
+  }
+
+  &:hover {
+    border-color: var(--p5-red);
+    box-shadow:   var(--glow-sm), -2px 0 0 0 var(--p5-red-dark);
+  }
+
+  // Wipe de revelação: clip-path da esquerda
+  .entry--visible & {
+    animation: cardWipe 0.55s var(--ease-out-expo) 0.1s both;
+  }
+}
+
+// Sweep vermelho que cruza o card na entrada
+.cardSweep {
+  position:       absolute;
+  inset:          0;
+  background:     var(--p5-red);
+  z-index:        10;
+  pointer-events: none;
+  clip-path:      polygon(0 0, 0 0, 0 100%, 0 100%);
+
+  .entry--visible & {
+    animation: sweepPass 0.5s var(--ease-out-expo) 0.1s both;
+  }
+}
+
+// ─── Conteúdo interno ─────────────────────────────────────────────────────────
+.cardInner {
+  padding: var(--sp-4) var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+
+  // Fade-in escalonado do conteúdo após o wipe
+  opacity: 0;
+
+  .entry--visible & {
+    animation: contentFade 0.4s ease 0.35s both;
+  }
+}
+
+// ─── Elementos internos (herdados do módulo pai via prop className) ───────────
+// Não redefine visual — apenas adiciona micro-animações de elevação no hover
+
+.entryTop {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             var(--sp-3);
+  flex-wrap:       wrap;
+}
+
+.entryStatus {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  font-weight:    700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding:        0.2em 0.8em;
+  clip-path:      var(--clip-tag);
+  flex-shrink:    0;
+
+  .entry--current & {
+    background: var(--p5-red);
+    color:      var(--p5-white);
+    box-shadow: var(--glow-sm);
+  }
+
+  .entry--past & {
+    background:   transparent;
+    border:       1px solid var(--p5-gray-mid);
+    color:        var(--p5-gray-light);
+  }
+}
+
+.entryPeriod {
+  font-family:    var(--font-heading);
+  font-size:      10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color:          var(--p5-gray-light);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::before {
+    content:    '';
+    display:    inline-block;
+    width:      12px;
+    height:     1px;
+    background: var(--p5-gray-mid);
+  }
+}
+
+.entryRole {
+  display:        flex;
+  flex-direction: column;
+  gap:            var(--sp-1);
+}
+
+.entryRoleTitle {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-lg);
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--p5-white);
+  line-height:    1.1;
+}
+
+.entryCompany {
+  font-family:    var(--font-heading);
+  font-size:      var(--text-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  display:        flex;
+  align-items:    center;
+  gap:            var(--sp-2);
+
+  &::before {
+    content: '◆';
+    font-size: 7px;
+    opacity: 0.7;
+  }
+}
+
+.entryDesc {
+  font-family:  var(--font-body);
+  font-size:    var(--text-sm);
+  font-weight:  500;
+  line-height:  1.7;
+  color:        var(--p5-white-dim);
+  padding-left: var(--sp-3);
+  border-left:  2px solid var(--p5-gray-dark);
+  transition:   border-color var(--duration-base);
+
+  .card:hover & {
+    border-color: rgba(226, 0, 26, 0.3);
+  }
+}
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes entryReveal {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes markerStamp {
+  0%   { transform: scale(0)    rotate(-45deg); opacity: 0; }
+  55%  { transform: scale(1.35) rotate(10deg);  opacity: 1; }
+  75%  { transform: scale(0.9)  rotate(-4deg); }
+  100% { transform: scale(1)    rotate(0deg);   opacity: 1; }
+}
+
+@keyframes ringExpand {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 0.45; transform: scale(1); }
+}
+
+@keyframes cardWipe {
+  from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+  to   { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%); }
+}
+
+@keyframes sweepPass {
+  0%   { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+  45%  { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+}
+
+@keyframes contentFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Reduzir movimento ────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .entry--visible,
+  .entry--visible .card,
+  .entry--visible .cardInner,
+  .entry--visible .marker,
+  .entry--visible .cardSweep {
+    animation: none !important;
+    opacity:   1 !important;
+    transform: none !important;
+  }
+
+  .entry--visible .line {
+    transition: none;
+    height:     calc(100% - 32px);
+  }
+
+  .markerRing { display: none; }
+  .cardSweep  { display: none; }
+}

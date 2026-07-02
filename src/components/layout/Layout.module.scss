@@ -1,0 +1,34 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Layout.module.scss — shell da SPA: Navbar + área de conteúdo
+// ═══════════════════════════════════════════════════════════════════════════════
+
+@use '@styles/mixins' as *;
+
+// ─── Shell raiz ───────────────────────────────────────────────────────────────
+.shell {
+  display: flex;
+  min-height: 100dvh;
+}
+
+// ─── Área de conteúdo (Outlet) ────────────────────────────────────────────────
+.main {
+  flex: 1;
+  margin-left: 220px;   // largura da Navbar desktop
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@include mobile {
+  .shell {
+    flex-direction: column;
+  }
+
+  .main {
+    margin-left: 0;
+    margin-top:  0;
+    // Espaço para a BottomNav fixa (60px + safe-area)
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}

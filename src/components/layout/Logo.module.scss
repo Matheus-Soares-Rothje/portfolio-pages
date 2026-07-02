@@ -1,0 +1,85 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// Logo.module.scss — símbolo geométrico + iniciais
+// ═══════════════════════════════════════════════════════════════════════════════
+
+.logo {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--sp-3);
+  padding:         var(--sp-5) var(--sp-5) var(--sp-4);
+  text-decoration: none;
+  position:        relative;
+  overflow:        hidden;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover .diamond    { transform: rotate(90deg); color: var(--p5-red); }
+  &:hover .markGlow   { opacity: 1; }
+  &:hover .initials   { letter-spacing: 0.18em; }
+  &:hover .accent     { transform: scaleX(1); }
+  &:focus-visible     { outline: 2px solid var(--p5-red); outline-offset: 3px; }
+}
+
+// ─── Símbolo losango ─────────────────────────────────────────────────────────
+.mark {
+  position:   relative;
+  flex-shrink:0;
+  width:      32px;
+  height:     32px;
+}
+
+.diamond {
+  width:      100%;
+  height:     100%;
+  color:      var(--p5-white);
+  transition: transform 0.5s var(--ease-out-expo), color 0.3s;
+}
+
+.markGlow {
+  position:   absolute;
+  inset:      -4px;
+  background: radial-gradient(circle, rgba(226,0,26,0.35), transparent 65%);
+  opacity:    0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+// ─── Texto ────────────────────────────────────────────────────────────────────
+.text {
+  display:        flex;
+  flex-direction: column;
+  line-height:    1;
+  gap:            2px;
+}
+
+.initials {
+  font-family:    var(--font-display);
+  font-size:      1.75rem;
+  letter-spacing: 0.12em;
+  color:          var(--p5-white);
+  line-height:    0.9;
+  // Sombra offset — mais contida que antes
+  text-shadow:    2px 2px 0 var(--p5-red-dark);
+  transition:     letter-spacing 0.4s var(--ease-out-expo), text-shadow 0.3s;
+}
+
+.sub {
+  font-family:    var(--font-heading);
+  font-size:      9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color:          var(--p5-red);
+  font-weight:    700;
+}
+
+// ─── Linha de destaque lateral (cresce no hover) ──────────────────────────────
+.accent {
+  position:       absolute;
+  left:           0;
+  bottom:         0;
+  width:          100%;
+  height:         2px;
+  background:     linear-gradient(to right, var(--p5-red), transparent 70%);
+  transform:      scaleX(0.4);
+  transform-origin: left;
+  transition:     transform 0.4s var(--ease-out-expo);
+}
