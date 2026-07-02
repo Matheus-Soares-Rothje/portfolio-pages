@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// IMPORTANT: Change 'persona-portfolio' to your actual GitHub repo name before deploying
-const REPO_NAME = 'persona-portfolio'
+// IMPORTANT: Change 'portfolio-pages' to your actual GitHub repo name before deploying
+const REPO_NAME = 'portfolio-pages'
 
 export default defineConfig({
   base: `/${REPO_NAME}/`,

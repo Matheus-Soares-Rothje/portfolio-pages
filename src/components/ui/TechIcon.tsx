@@ -60,6 +60,12 @@ const icons: Record<CertificateIcon, JSX.Element> = {
       <ellipse cx="20" cy="20" rx="16" ry="6" stroke="#66DBFB" strokeWidth="1.5" fill="none" transform="rotate(-60 20 20)"/>
     </svg>
   ),
+  python: (
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19.8 4c-6.7 0-6.3 2.9-6.3 2.9v3h6.4v.9H10.9S6 10.2 6 17s4.3 6.6 4.3 6.6h2.6v-3.2s-.1-4.3 4.3-4.3h6.3s4.1.1 4.1-4V8.1S28.2 4 19.8 4zm-3.5 2c.6 0 1 .5 1 1s-.4 1-1 1-1-.5-1-1 .4-1 1-1z" fill="#3776AB"/>
+      <path d="M20.2 36c6.7 0 6.3-2.9 6.3-2.9v-3h-6.4v-.9h9.1S34 29.8 34 23s-4.3-6.6-4.3-6.6h-2.6v3.2s.1 4.3-4.3 4.3h-6.3s-4.1-.1-4.1 4v6s-.6 4.1 7.8 4.1zm3.5-2c-.6 0-1-.5-1-1s.4-1 1-1 1 .5 1 1-.4 1-1 1z" fill="#FFD43B"/>
+    </svg>
+  ),
   default: (
     <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <polygon points="20,4 36,36 4,36" fill="none" stroke="#E2001A" strokeWidth="2"/>
