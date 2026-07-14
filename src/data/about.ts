@@ -16,8 +16,8 @@ export const hardSkills: HardSkill[] = [
 ];
 
 export const stats: Stat[] = [
-  { label: "Anos de Ofício", value: "V" },
-  { label: "Volumes Publicados", value: "XXIV" },
-  { label: "Clientes Atendidos", value: "XII" },
+  { label: "Anos de Ofício", value: "III" },
+  { label: "Repositórios", value: "—" },
+  { label: "Commits na Conta", value: "—" },
   { label: "Xícaras de Café", value: "∞" },
 ];

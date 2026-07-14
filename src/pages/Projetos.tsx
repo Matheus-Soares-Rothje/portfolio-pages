@@ -36,7 +36,7 @@ export default function Projetos({ projects }: Props) {
       <SectionTitle
         volume="Vol. II"
         title="Projetos"
-        subtitle={`${projects.length} volumes catalogados no acervo`}
+        subtitle={`${projects.length} repositórios catalogados no acervo`}
       />
 
       <div className={styles.filters}>

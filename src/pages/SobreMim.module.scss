@@ -59,6 +59,22 @@
 .timeline { margin-top: 8px; }
 
 @media (max-width: 768px) {
-  .book { grid-template-columns: 1fr; padding: 24px; }
+  .wrap { padding: 0 4px; }
+  .book {
+    grid-template-columns: 1fr;
+    padding: 20px 16px;
+    gap: 24px;
+    outline-offset: 2px;
+  }
   .book::before { display: none; }
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .bio p { font-size: 15px; }
+}
+
+@media (max-width: 400px) {
+  .book { padding: 16px 12px; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 8px; }
 }

@@ -7,6 +7,8 @@
   text-align: center;
   position: relative;
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.4);
+  min-width: 0;
+  overflow: hidden;
 }
 .value {
   font-family: var(--font-display);
@@ -22,4 +24,16 @@
   color: var(--text-secondary);
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .card { padding: 16px 8px; outline-offset: 2px; }
+  .value { font-size: 26px; }
+  .label { font-size: 10px; letter-spacing: 0.1em; }
+}
+
+@media (max-width: 400px) {
+  .value { font-size: 22px; }
+  .label { font-size: 9px; }
 }

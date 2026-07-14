@@ -17,13 +17,20 @@ function writeCache<T>(key: string, data: T) {
   try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })) } catch { /* noop */ }
 }
 
+const EXCLUDED_REPOS = new Set([
+  'portfolio-certificados',
+  'portfolio-data',
+  'portfolio-experiencias',
+  'Matheus-Soares-Rothje',
+])
+
 async function fetchRepos(): Promise<GithubRepo[]> {
   const c = readCache<GithubRepo[]>(REPOS_CACHE_KEY, REPOS_CACHE_TTL)
   if (c) return c
-  const r = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=30`)
+  const r = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`)
   if (!r.ok) throw new Error(`${r.status}`)
   const data: GithubRepo[] = await r.json()
-  const repos = data.filter(r => !r.fork)
+  const repos = data.filter(r => !r.fork && !EXCLUDED_REPOS.has(r.name))
   writeCache(REPOS_CACHE_KEY, repos)
   return repos
 }
