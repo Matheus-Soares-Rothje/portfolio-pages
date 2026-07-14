@@ -4,8 +4,8 @@ export const contacts: ContactItem[] = [
   {
     type: "email",
     label: "Correspondência",
-    value: "contato@mattz.dev",
-    url: "mailto:contato@mattz.dev",
+    value: "mattzzzsource@gmail.com",
+    url: "mailto:mattzzzsource@gmail.com",
   },
   {
     type: "github",
