@@ -1,0 +1,19 @@
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px auto;
+  max-width: 480px;
+  color: var(--gold);
+}
+.diamond { font-size: 12px; }
+.line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dark), transparent); }
+.label {
+  font-family: var(--font-vintage);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  padding: 0 4px;
+}

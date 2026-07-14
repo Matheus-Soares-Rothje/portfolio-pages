@@ -1,0 +1,62 @@
+:root {
+  --bg-primary: #0d1a0f;
+  --bg-secondary: #111f13;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dark: #8b6914;
+  --text-primary: #e8dcc8;
+  --text-secondary: #a89880;
+  --border: #2a3d2c;
+  --green-deco: #1a2e1c;
+
+  --font-display: "Playfair Display", serif;
+  --font-vintage: "IM Fell English", serif;
+  --font-body: "Crimson Text", serif;
+  --font-mono: "Courier Prime", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root { min-height: 100%; }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  position: relative;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(200, 168, 76, 0.015) 3px, rgba(200, 168, 76, 0.015) 4px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+a { color: var(--gold); text-decoration: none; transition: color 0.2s ease; }
+a:hover { color: var(--gold-light); }
+
+button { font-family: inherit; cursor: pointer; }
+
+::selection { background: var(--gold); color: var(--bg-primary); }
+
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; letter-spacing: 0.02em; }
+
+img { max-width: 100%; display: block; }
+
+/* ── Scrollbar invisível ── */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}

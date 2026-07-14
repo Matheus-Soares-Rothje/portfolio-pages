@@ -1,0 +1,31 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  background: transparent;
+  color: inherit;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.primary {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #1a1206;
+  outline: 1px solid var(--gold-dark);
+  outline-offset: 3px;
+  box-shadow: 0 4px 14px rgba(201, 168, 76, 0.25), inset 0 -2px 0 rgba(0,0,0,0.15);
+}
+.primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.outline {
+  background: transparent;
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+  outline: 1px solid var(--gold-dark);
+  outline-offset: 3px;
+}
+.outline:hover { background: rgba(201, 168, 76, 0.08); color: var(--text-primary); }

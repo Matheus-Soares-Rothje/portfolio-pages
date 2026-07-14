@@ -1,0 +1,39 @@
+.wrap { max-width: 1200px; margin: 0 auto; }
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 8px 0 4px;
+}
+.chip {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--gold-dark);
+  padding: 6px 14px;
+  font-family: var(--font-vintage);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+}
+.chip:hover { color: var(--text-primary); border-color: var(--gold); }
+.chipActive { color: var(--bg-primary); background: var(--gold); border-color: var(--gold-light); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 8px;
+}
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }

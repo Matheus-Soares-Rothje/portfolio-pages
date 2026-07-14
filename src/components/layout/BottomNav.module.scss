@@ -1,0 +1,34 @@
+.bottom {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bottom {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, #0a140b, #111f13);
+    border-top: 1px solid var(--border);
+    padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    justify-content: space-around;
+    z-index: 200;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  }
+  .item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 4px;
+    color: var(--text-secondary);
+    font-family: var(--font-vintage);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+  .active { color: var(--gold-light); }
+}
